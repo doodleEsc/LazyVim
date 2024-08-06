@@ -34,63 +34,158 @@ return {
     end,
   },
 
-  -- This is what powers LazyVim's fancy-looking
-  -- tabs, which include filetype icons and close buttons.
   {
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    keys = {
-      { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
-      { "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete Non-Pinned Buffers" },
-      { "<leader>bo", "<Cmd>BufferLineCloseOthers<CR>", desc = "Delete Other Buffers" },
-      { "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
-      { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
-      { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
-      { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
-      { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
-      { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
-      { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
-      { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+    "romgrk/barbar.nvim",
+    event = { "BufReadPost" },
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
     },
-    opts = {
-      options = {
-        -- stylua: ignore
-        close_command = function(n) LazyVim.ui.bufremove(n) end,
-        -- stylua: ignore
-        right_mouse_command = function(n) LazyVim.ui.bufremove(n) end,
-        diagnostics = "nvim_lsp",
-        always_show_bufferline = false,
-        diagnostics_indicator = function(_, _, diag)
-          local icons = LazyVim.config.icons.diagnostics
-          local ret = (diag.error and icons.Error .. diag.error .. " " or "")
-            .. (diag.warning and icons.Warn .. diag.warning or "")
-          return vim.trim(ret)
+    keys = {
+      { "<S-h>", "<Cmd>BufferPrevious<CR>", desc = "Previous Buffer" },
+      { "<S-l>", "<Cmd>BufferNext<CR>", desc = "Next Buffer" },
+      { "<M-s>", "<Cmd>BufferOrderByDirectory<CR>", desc = "Sort Buffer" },
+      { "<M-,>", "<Cmd>BufferCloseBuffersLeft<CR>", desc = "Close All Buffers Left" },
+      { "<M-.>", "<Cmd>BufferCloseBuffersRight<CR>", desc = "Close All Buffers Right" },
+      { "<M-h>", "<Cmd>BufferMovePrevious<CR>", desc = "Re-order To Previous" },
+      { "<M-l>", "<Cmd>BufferMoveNext<CR>", desc = "Re-order To Next" },
+      { "<M-i>", "<Cmd>BufferPin<CR>", desc = "Pin Buffer" },
+      { "<M-o>", "<Cmd>BufferPick<CR>", desc = "Pick Buffer" },
+      {
+        "<S-n>",
+        function()
+          local win_num = vim.api.nvim_win_get_number(0)
+          local filetype = vim.bo.filetype
+          if filetype == "TelescopePrompt" or filetype == "NvimTree" then
+            return
+          end
+
+          if win_num > 2 then
+            vim.cmd([[bdelete!]])
+          else
+            vim.cmd([[BufferClose]])
+          end
         end,
-        offsets = {
-          {
-            filetype = "neo-tree",
-            text = "Neo-tree",
-            highlight = "Directory",
-            text_align = "left",
-          },
-        },
-        ---@param opts bufferline.IconFetcherOpts
-        get_element_icon = function(opts)
-          return LazyVim.config.icons.ft[opts.filetype]
-        end,
+        desc = "Close Current Buffer",
       },
     },
-    config = function(_, opts)
-      require("bufferline").setup(opts)
-      -- Fix bufferline when restoring a session
-      vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
-        callback = function()
-          vim.schedule(function()
-            pcall(nvim_bufferline)
-          end)
-        end,
-      })
-    end,
+    opts = {
+      -- Enable/disable animations
+      animation = true,
+
+      -- Enable/disable auto-hiding the tab bar when there is a single buffer
+      auto_hide = false,
+
+      -- Enable/disable current/total tabpages indicator (top right corner)
+      tabpages = true,
+
+      -- Enables/disable clickable tabs
+      --  - left-click: go to buffer
+      --  - middle-click: delete buffer
+      clickable = true,
+
+      -- Excludes buffers from the tabline
+      exclude_ft = {
+        "alpha",
+        "dap-repl",
+      },
+      exclude_name = { "alpha" },
+
+      -- A buffer to this direction will be focused (if it exists) when closing the current buffer.
+      -- Valid options are 'left' (the default) and 'right'
+      focus_on_close = "left",
+
+      -- Hide inactive buffers and file extensions. Other options are `alternate`, `current`, and `visible`.
+      hide = {
+        extensions = true,
+        inactive = false,
+      },
+
+      -- Disable highlighting alternate buffers
+      highlight_alternate = false,
+
+      -- Disable highlighting file icons in inactive buffers
+      highlight_inactive_file_icons = false,
+
+      -- Enable highlighting visible buffers
+      highlight_visible = true,
+
+      icons = {
+        -- Configure the base icons on the bufferline.
+        buffer_index = true,
+        buffer_number = false,
+        button = "×",
+        -- Enables / disables diagnostic symbols
+        diagnostics = {
+          [vim.diagnostic.severity.ERROR] = { enabled = false, icon = " " },
+          [vim.diagnostic.severity.WARN] = { enabled = false },
+          [vim.diagnostic.severity.INFO] = { enabled = false },
+          [vim.diagnostic.severity.HINT] = { enabled = false },
+        },
+        filetype = {
+          -- Sets the icon's highlight group.
+          -- If false, will use nvim-web-devicons colors
+          custom_colors = false,
+          -- Requires `nvim-web-devicons` if `true`
+          enabled = true,
+        },
+        separator = { left = "│", right = "" },
+        separator_at_end = true,
+        -- Configure the icons on the bufferline when modified or pinned.
+        -- Supports all the base icon options.
+        modified = { button = "●" },
+        pinned = { button = "車" },
+        -- Configure the icons on the bufferline based on the visibility of a buffer.
+        -- Supports all the base icon options, plus `modified` and `pinned`.
+        alternate = { filetype = { enabled = false } },
+        current = { buffer_index = true },
+        inactive = { button = "×", buffer_index = true },
+        visible = { modified = { buffer_number = false } },
+      },
+
+      -- If true, new buffers will be inserted at the start/end of the list.
+      -- Default is to insert after current buffer.
+      insert_at_end = true,
+      insert_at_start = false,
+
+      -- Sets the maximum padding width with which to surround each tab
+      maximum_padding = 1,
+
+      -- Sets the minimum padding width with which to surround each tab
+      minimum_padding = 1,
+
+      -- Sets the maximum buffer name length.
+      maximum_length = 30,
+
+      -- If set, the letters for each buffer in buffer-pick mode will be
+      -- assigned based on their name. Otherwise or in case all letters are
+      -- already assigned, the behavior is to assign letters in order of
+      -- usability (see order below)
+      semantic_letters = true,
+
+      -- Set the filetypes which barbar will offset itself for
+      sidebar_filetypes = {
+        -- Use the default values: {event = 'BufWinLeave', text = '', align = 'left'}
+        NvimTree = true,
+        -- Or, specify the text used for the offset:
+        undotree = {
+          text = "undotree",
+          align = "center", -- *optionally* specify an alignment (either 'left', 'center', or 'right')
+        },
+        -- Or, specify the event which the sidebar executes when leaving:
+        ["neo-tree"] = { event = "BufWipeout" },
+        -- Or, specify all three
+        Outline = { event = "BufWinLeave", text = "outline", align = "right" },
+      },
+
+      -- New buffer letters are assigned in this order. This order is
+      -- optimal for the qwerty keyboard layout but might need adjustment
+      -- for other layouts.
+      letters = "asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP",
+
+      -- Sets the name of unnamed buffers. By default format is "[Buffer X]"
+      -- where X is the buffer number. But only a static string is accepted here.
+      no_name_title = nil,
+    },
   },
 
   -- statusline
@@ -339,6 +434,10 @@ return {
 
   -- ui components
   { "MunifTanjim/nui.nvim", lazy = true },
+
+  -- icons
+  { "nvim-tree/nvim-web-devicons", lazy = true },
+  { "mortepau/codicons.nvim", lazy = true },
 
   {
     "nvimdev/dashboard-nvim",

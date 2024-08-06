@@ -1,5 +1,10 @@
 return {
 
+  {
+    "ellisonleao/gruvbox.nvim",
+    lazy = true,
+  },
+
   -- tokyonight
   {
     "folke/tokyonight.nvim",

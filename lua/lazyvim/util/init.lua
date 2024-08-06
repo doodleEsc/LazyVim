@@ -18,6 +18,7 @@ local LazyUtil = require("lazy.core.util")
 ---@field mini lazyvim.util.mini
 ---@field pick lazyvim.util.pick
 ---@field cmp lazyvim.util.cmp
+---@field tree lazyvim.util.tree
 local M = {}
 
 ---@type table<string, string|string[]>
