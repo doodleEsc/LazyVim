@@ -1,127 +1,404 @@
 return {
 
   -- file explorer
+  -- {
+  --   "nvim-neo-tree/neo-tree.nvim",
+  --   cmd = "Neotree",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+  --     "MunifTanjim/nui.nvim",
+  --     -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+  --   },
+  --   keys = {
+  --     {
+  --       "<leader>tt",
+  --       function()
+  --         require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root() })
+  --       end,
+  --       desc = "Explorer NeoTree (Root Dir)",
+  --     },
+  --     -- {
+  --     --   "<leader>fE",
+  --     --   function()
+  --     --     require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() })
+  --     --   end,
+  --     --   desc = "Explorer NeoTree (cwd)",
+  --     -- },
+  --     -- { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (Root Dir)", remap = true },
+  --     -- { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+  --     -- {
+  --     --   "<leader>ge",
+  --     --   function()
+  --     --     require("neo-tree.command").execute({ source = "git_status", toggle = true })
+  --     --   end,
+  --     --   desc = "Git Explorer",
+  --     -- },
+  --     -- {
+  --     --   "<leader>be",
+  --     --   function()
+  --     --     require("neo-tree.command").execute({ source = "buffers", toggle = true })
+  --     --   end,
+  --     --   desc = "Buffer Explorer",
+  --     -- },
+  --   },
+  --   deactivate = function()
+  --     vim.cmd([[Neotree close]])
+  --   end,
+  --   init = function()
+  --     -- FIX: use `autocmd` for lazy-loading neo-tree instead of directly requiring it,
+  --     -- because `cwd` is not set up properly.
+  --     vim.api.nvim_create_autocmd("BufEnter", {
+  --       group = vim.api.nvim_create_augroup("Neotree_start_directory", { clear = true }),
+  --       desc = "Start Neo-tree with directory",
+  --       once = true,
+  --       callback = function()
+  --         if package.loaded["neo-tree"] then
+  --           return
+  --         else
+  --           local stats = vim.uv.fs_stat(vim.fn.argv(0))
+  --           if stats and stats.type == "directory" then
+  --             require("neo-tree")
+  --           end
+  --         end
+  --       end,
+  --     })
+  --   end,
+  --   opts = {
+  --     sources = { "filesystem", "buffers", "git_status" },
+  --     open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
+  --     filesystem = {
+  --       bind_to_cwd = false,
+  --       follow_current_file = { enabled = true },
+  --       use_libuv_file_watcher = true,
+  --     },
+  --     window = {
+  --       position = "left",
+  --       width = 40,
+  --       mapping_options = {
+  --         noremap = true,
+  --         nowait = true,
+  --       },
+  --       mappings = {
+  --         ["l"] = "open",
+  --         ["h"] = "close_node",
+  --         ["<space>"] = "none",
+  --         ["Y"] = {
+  --           function(state)
+  --             local node = state.tree:get_node()
+  --             local path = node:get_id()
+  --             vim.fn.setreg("+", path, "c")
+  --           end,
+  --           desc = "Copy Path to Clipboard",
+  --         },
+  --         ["O"] = {
+  --           function(state)
+  --             require("lazy.util").open(state.tree:get_node().path, { system = true })
+  --           end,
+  --           desc = "Open with System Application",
+  --         },
+  --         ["P"] = { "toggle_preview", config = { use_float = false } },
+  --       },
+  --     },
+  --     default_component_configs = {
+  --       indent = {
+  --         with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+  --         expander_collapsed = "",
+  --         expander_expanded = "",
+  --         expander_highlight = "NeoTreeExpander",
+  --       },
+  --       git_status = {
+  --         symbols = {
+  --           unstaged = "󰄱",
+  --           staged = "󰱒",
+  --         },
+  --       },
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     local function on_move(data)
+  --       LazyVim.lsp.on_rename(data.source, data.destination)
+  --     end
+  --
+  --     local events = require("neo-tree.events")
+  --     opts.event_handlers = opts.event_handlers or {}
+  --     vim.list_extend(opts.event_handlers, {
+  --       { event = events.FILE_MOVED, handler = on_move },
+  --       { event = events.FILE_RENAMED, handler = on_move },
+  --     })
+  --     require("neo-tree").setup(opts)
+  --     vim.api.nvim_create_autocmd("TermClose", {
+  --       pattern = "*lazygit",
+  --       callback = function()
+  --         if package.loaded["neo-tree.sources.git_status"] then
+  --           require("neo-tree.sources.git_status").refresh()
+  --         end
+  --       end,
+  --     })
+  --   end,
+  -- },
+
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    cmd = "Neotree",
+    "nvim-tree/nvim-tree.lua",
+    -- lazy = true,
+    cmd = "NvimTreeOpen",
     keys = {
+      { "<leader>tt", "<Cmd>NvimTreeToggle<CR>", desc = "Toggle File Explorer" },
       {
-        "<leader>tt",
+        "<leader>tr",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root() })
-        end,
-        desc = "Explorer NeoTree (Root Dir)",
-      },
-      -- {
-      --   "<leader>fE",
-      --   function()
-      --     require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() })
-      --   end,
-      --   desc = "Explorer NeoTree (cwd)",
-      -- },
-      -- { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (Root Dir)", remap = true },
-      -- { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
-      -- {
-      --   "<leader>ge",
-      --   function()
-      --     require("neo-tree.command").execute({ source = "git_status", toggle = true })
-      --   end,
-      --   desc = "Git Explorer",
-      -- },
-      -- {
-      --   "<leader>be",
-      --   function()
-      --     require("neo-tree.command").execute({ source = "buffers", toggle = true })
-      --   end,
-      --   desc = "Buffer Explorer",
-      -- },
-    },
-    deactivate = function()
-      vim.cmd([[Neotree close]])
-    end,
-    init = function()
-      -- FIX: use `autocmd` for lazy-loading neo-tree instead of directly requiring it,
-      -- because `cwd` is not set up properly.
-      vim.api.nvim_create_autocmd("BufEnter", {
-        group = vim.api.nvim_create_augroup("Neotree_start_directory", { clear = true }),
-        desc = "Start Neo-tree with directory",
-        once = true,
-        callback = function()
-          if package.loaded["neo-tree"] then
+          if vim.bo.filetype == "alpha" then
             return
-          else
-            local stats = vim.uv.fs_stat(vim.fn.argv(0))
-            if stats and stats.type == "directory" then
-              require("neo-tree")
-            end
           end
+          local api = require("nvim-tree.api")
+          if api.tree.is_visible() then
+            api.tree.find_file(vim.fn.expand("%:p"))
+          else
+            api.tree.toggle(true, false)
+          end
+          api.tree.focus()
         end,
-      })
-    end,
-    opts = {
-      sources = { "filesystem", "buffers", "git_status" },
-      open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
-      filesystem = {
-        bind_to_cwd = false,
-        follow_current_file = { enabled = true },
-        use_libuv_file_watcher = true,
+        desc = "Toggle File Explorer",
       },
-      window = {
-        mappings = {
-          ["l"] = "open",
-          ["h"] = "close_node",
-          ["<space>"] = "none",
-          ["Y"] = {
-            function(state)
-              local node = state.tree:get_node()
-              local path = node:get_id()
-              vim.fn.setreg("+", path, "c")
-            end,
-            desc = "Copy Path to Clipboard",
-          },
-          ["O"] = {
-            function(state)
-              require("lazy.util").open(state.tree:get_node().path, { system = true })
-            end,
-            desc = "Open with System Application",
-          },
-          ["P"] = { "toggle_preview", config = { use_float = false } },
-        },
-      },
-      default_component_configs = {
-        indent = {
-          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-          expander_collapsed = "",
-          expander_expanded = "",
-          expander_highlight = "NeoTreeExpander",
-        },
-        git_status = {
-          symbols = {
-            unstaged = "󰄱",
-            staged = "󰱒",
-          },
-        },
-      },
+    },
+    dependencies = {
+      "mortepau/codicons.nvim",
+      "nvim-tree/nvim-web-devicons",
     },
     config = function(_, opts)
-      local function on_move(data)
-        LazyVim.lsp.on_rename(data.source, data.destination)
-      end
-
-      local events = require("neo-tree.events")
-      opts.event_handlers = opts.event_handlers or {}
-      vim.list_extend(opts.event_handlers, {
-        { event = events.FILE_MOVED, handler = on_move },
-        { event = events.FILE_RENAMED, handler = on_move },
-      })
-      require("neo-tree").setup(opts)
-      vim.api.nvim_create_autocmd("TermClose", {
-        pattern = "*lazygit",
-        callback = function()
-          if package.loaded["neo-tree.sources.git_status"] then
-            require("neo-tree.sources.git_status").refresh()
-          end
-        end,
+      local codicons = require("codicons")
+      require("nvim-tree").setup({
+        -- BEGIN_DEFAULT_OPTS
+        auto_reload_on_write = true,
+        disable_netrw = true,
+        hijack_cursor = true,
+        hijack_netrw = true,
+        hijack_unnamed_buffer_when_opening = false,
+        sort_by = LazyVim.tree.sort_by,
+        root_dirs = {},
+        prefer_startup_root = false,
+        sync_root_with_cwd = true,
+        reload_on_bufenter = false,
+        respect_buf_cwd = true,
+        on_attach = LazyVim.tree.on_attach,
+        select_prompts = false,
+        view = {
+          cursorline = true,
+          debounce_delay = 15,
+          adaptive_size = false,
+          centralize_selection = true,
+          width = 30,
+          side = "left",
+          preserve_window_proportions = false,
+          number = false,
+          relativenumber = false,
+          signcolumn = "yes",
+          float = {
+            enable = false,
+            quit_on_focus_loss = true,
+            open_win_config = {
+              relative = "editor",
+              border = "rounded",
+              width = 30,
+              height = 30,
+              row = 1,
+              col = 1,
+            },
+          },
+        },
+        renderer = {
+          full_name = false,
+          highlight_modified = "none",
+          root_folder_label = ":~:s?$?/..?",
+          indent_width = 2,
+          add_trailing = false,
+          group_empty = false,
+          highlight_git = true,
+          highlight_opened_files = "all",
+          root_folder_modifier = ":~",
+          highlight_diagnostics = false,
+          highlight_bookmarks = "none",
+          highlight_clipboard = "name",
+          special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
+          symlink_destination = true,
+          indent_markers = {
+            enable = true,
+            inline_arrows = true,
+            icons = {
+              corner = "└",
+              edge = "│",
+              item = "│",
+              bottom = "─",
+              none = " ",
+            },
+          },
+          icons = {
+            webdev_colors = true,
+            git_placement = "signcolumn",
+            modified_placement = "after",
+            padding = " ",
+            symlink_arrow = codicons.get("arrow-small-right"),
+            show = {
+              file = true,
+              folder = true,
+              folder_arrow = true,
+              git = true,
+              modified = true,
+            },
+            glyphs = {
+              default = codicons.get("file"),
+              symlink = codicons.get("file-symlink-file"),
+              bookmark = codicons.get("bookmark"),
+              modified = "●",
+              folder = {
+                arrow_closed = "",
+                arrow_open = "",
+                default = codicons.get("folder"),
+                open = codicons.get("folder-opened"),
+                empty = codicons.get("folder"),
+                empty_open = codicons.get("folder-opened"),
+                symlink = codicons.get("file-symlink-directory"),
+                symlink_open = codicons.get("folder-opened"),
+              },
+              git = {
+                unstaged = codicons.get("diff"),
+                staged = codicons.get("diff-added"),
+                unmerged = codicons.get("diff-modified"),
+                renamed = codicons.get("diff-renamed"),
+                untracked = codicons.get("zoom-in"),
+                deleted = codicons.get("diff-removed"),
+                ignored = codicons.get("diff-ignored"),
+              },
+            },
+          },
+        },
+        hijack_directories = {
+          enable = true,
+          auto_open = true,
+        },
+        update_focused_file = {
+          enable = false,
+          update_cwd = false,
+          ignore_list = {},
+        },
+        system_open = {
+          cmd = "",
+          args = {},
+        },
+        diagnostics = {
+          enable = true,
+          show_on_dirs = true,
+          show_on_open_dirs = true,
+          debounce_delay = 50,
+          severity = {
+            -- min = vim.diagnostic.severity.HINT,
+            max = vim.diagnostic.severity.ERROR,
+          },
+          icons = {
+            hint = codicons.get("question"),
+            info = codicons.get("info"),
+            warning = codicons.get("warning"),
+            error = codicons.get("error"),
+          },
+        },
+        filters = {
+          dotfiles = false,
+          git_clean = false,
+          no_buffer = false,
+          custom = {},
+          exclude = {},
+        },
+        filesystem_watchers = {
+          enable = true,
+          debounce_delay = 100,
+          ignore_dirs = {},
+        },
+        git = {
+          enable = true,
+          ignore = false,
+          timeout = 200,
+          show_on_dirs = true,
+          show_on_open_dirs = true,
+        },
+        modified = {
+          enable = true,
+          show_on_dirs = true,
+          show_on_open_dirs = true,
+        },
+        actions = {
+          use_system_clipboard = true,
+          change_dir = {
+            enable = true,
+            global = false,
+            restrict_above_cwd = false,
+          },
+          expand_all = {
+            max_folder_discovery = 300,
+            exclude = {},
+          },
+          file_popup = {
+            open_win_config = {
+              col = 1,
+              row = 1,
+              relative = "cursor",
+              border = "shadow",
+              style = "minimal",
+            },
+          },
+          open_file = {
+            quit_on_open = false,
+            resize_window = true,
+            window_picker = {
+              enable = true,
+              picker = "default",
+              chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+              exclude = {
+                filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
+                buftype = { "nofile", "terminal", "help" },
+              },
+            },
+          },
+          remove_file = {
+            close_window = true,
+          },
+        },
+        trash = {
+          cmd = "git trash",
+        },
+        live_filter = {
+          prefix = "[FILTER]: ",
+          always_show_folders = true,
+        },
+        tab = {
+          sync = {
+            open = false,
+            close = false,
+            ignore = {},
+          },
+        },
+        notify = {
+          threshold = vim.log.levels.INFO,
+        },
+        ui = {
+          confirm = {
+            remove = true,
+            trash = true,
+          },
+        },
+        log = {
+          enable = false,
+          truncate = false,
+          types = {
+            all = false,
+            config = false,
+            copy_paste = false,
+            dev = false,
+            diagnostics = false,
+            git = false,
+            profile = false,
+            watcher = false,
+          },
+        },
       })
     end,
   },
