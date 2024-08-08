@@ -35,17 +35,38 @@ return {
   {
     "nvim-cmp",
     -- stylua: ignore
-    keys = {
-      {
-        "<tab>",
-        function()
-          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
-        end,
-        expr = true, silent = true, mode = "i",
-      },
-      { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
-      { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
-    },
+    opts = function(_, opts)
+      local cmp = require("cmp")
+      local mapping = {
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif require("luasnip").jumpable(-1) then
+              require("luasnip").jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif require("luasnip").jumpable(1) then
+              require("luasnip").jump(1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+      }
+
+      for k, v in pairs(mapping) do
+        if opts.mapping[k] == nil then
+          opts.mapping[k] = v
+        end
+      end
+
+    end
+,
   },
   {
     "garymjr/nvim-snippets",

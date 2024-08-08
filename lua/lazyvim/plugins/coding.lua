@@ -8,7 +8,7 @@ return {
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
+      "FelipeLema/cmp-async-path",
     },
     -- Not all LSP servers add brackets when completing a function.
     -- To better deal with this, LazyVim adds a custom option to cmp,
@@ -25,26 +25,100 @@ return {
       local defaults = require("cmp.config.default")()
       local auto_select = true
       return {
+        enabled = function()
+          local disabled = false
+          disabled = disabled or (vim.api.nvim_buf_get_option(0, "buftype") == "prompt")
+          -- disabled = disabled or (vim.api.nvim_buf_get_option(0, 'filetype') == 'TelescopePrompt')
+          disabled = disabled or (vim.fn.reg_recording() ~= "")
+          disabled = disabled or (vim.fn.reg_executing() ~= "")
+          return not disabled
+        end,
         auto_brackets = {}, -- configure any filetype to auto add brackets
         completion = {
           completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect"),
         },
         preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None,
-        mapping = cmp.mapping.preset.insert({
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<CR>"] = LazyVim.cmp.confirm({ select = auto_select }),
-          ["<C-y>"] = LazyVim.cmp.confirm({ select = true }),
-          ["<S-CR>"] = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-          ["<C-CR>"] = function(fallback)
-            cmp.abort()
-            fallback()
-          end,
-        }),
+        -- mapping = cmp.mapping.preset.insert({
+        --   ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        --   ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        --   ["<C-Space>"] = cmp.mapping.complete(),
+        --   ["<CR>"] = LazyVim.cmp.confirm({ select = auto_select }),
+        --   ["<C-y>"] = LazyVim.cmp.confirm({ select = true }),
+        --   ["<S-CR>"] = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        --   ["<C-CR>"] = function(fallback)
+        --     cmp.abort()
+        --     fallback()
+        --   end,
+        -- }),
+        mapping = {
+          ["<CR>"] = cmp.mapping({
+            i = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+            c = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+            s = LazyVim.cmp.confirm({ select = false }),
+          }),
+
+          ["<C-x>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.abort()
+            else
+              fallback()
+            end
+          end),
+
+          ["<C-p>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            else
+              cmp.complete()
+            end
+          end, { "i", "s" }),
+
+          ["<C-n>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            else
+              cmp.complete()
+            end
+          end, { "i", "s" }),
+
+          ["<C-d>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item({
+                behavior = cmp.SelectBehavior.Select,
+                count = 5,
+              })
+            else
+              cmp.complete()
+            end
+          end, { "i", "s" }),
+          ["<C-u>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item({
+                behavior = cmp.SelectBehavior.Select,
+                count = 5,
+              })
+            else
+              cmp.complete()
+            end
+          end, { "i", "s" }),
+          ["<M-n>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.scroll_docs(2)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ["<M-p>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.scroll_docs(-2)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+        },
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
-          { name = "path" },
+          { name = "async_path" },
         }, {
           { name = "buffer" },
         }),
@@ -77,51 +151,37 @@ return {
         sorting = defaults.sorting,
       }
     end,
-    main = "lazyvim.util.cmp",
-  },
+    config = function(_, opts)
+      local cmp = require("cmp")
+      cmp.setup(opts)
 
-  -- snippets
-  {
-    "nvim-cmp",
-    dependencies = {
-      {
-        "garymjr/nvim-snippets",
-        opts = {
-          friendly_snippets = true,
+      -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline("/", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = "buffer" },
         },
-        dependencies = { "rafamadriz/friendly-snippets" },
-      },
-    },
-    opts = function(_, opts)
-      opts.snippet = {
-        expand = function(item)
-          return LazyVim.cmp.expand(item.body)
-        end,
-      }
-      if LazyVim.has("nvim-snippets") then
-        table.insert(opts.sources, { name = "snippets" })
-      end
+      })
+
+      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline({
+          ["<Up>"] = {
+            c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+          },
+          ["<Down>"] = {
+            c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+          },
+        }),
+        sources = cmp.config.sources({
+          { name = "cmdline" },
+        }, {
+          { name = "async_path" },
+        }),
+      })
     end,
-    keys = {
-      {
-        "<Tab>",
-        function()
-          return vim.snippet.active({ direction = 1 }) and "<cmd>lua vim.snippet.jump(1)<cr>" or "<Tab>"
-        end,
-        expr = true,
-        silent = true,
-        mode = { "i", "s" },
-      },
-      {
-        "<S-Tab>",
-        function()
-          return vim.snippet.active({ direction = -1 }) and "<cmd>lua vim.snippet.jump(-1)<cr>" or "<S-Tab>"
-        end,
-        expr = true,
-        silent = true,
-        mode = { "i", "s" },
-      },
-    },
+
+    -- main = "lazyvim.util.cmp",
   },
 
   -- auto pairs
