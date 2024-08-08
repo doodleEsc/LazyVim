@@ -440,68 +440,85 @@ return {
   { "mortepau/codicons.nvim", lazy = true },
 
   {
-    "nvimdev/dashboard-nvim",
-    lazy = false, -- As https://github.com/nvimdev/dashboard-nvim/pull/450, dashboard-nvim shouldn't be lazy-loaded to properly handle stdin.
-    opts = function()
-      local logo = [[
-           ██╗      █████╗ ███████╗██╗   ██╗██╗   ██╗██╗███╗   ███╗          Z
-           ██║     ██╔══██╗╚══███╔╝╚██╗ ██╔╝██║   ██║██║████╗ ████║      Z    
-           ██║     ███████║  ███╔╝  ╚████╔╝ ██║   ██║██║██╔████╔██║   z       
-           ██║     ██╔══██║ ███╔╝    ╚██╔╝  ╚██╗ ██╔╝██║██║╚██╔╝██║ z         
-           ███████╗██║  ██║███████╗   ██║    ╚████╔╝ ██║██║ ╚═╝ ██║           
-           ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝           
-      ]]
+    "goolord/alpha-nvim",
+    lazy = true,
+    event = "BufWinEnter",
+    config = function()
+      local alpha = require("alpha")
+      local dashboard = require("alpha.themes.dashboard")
 
-      logo = string.rep("\n", 8) .. logo .. "\n\n"
+      local logo = {
+        "                                                     ",
+        "  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗ ",
+        "  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║ ",
+        "  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║ ",
+        "  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║ ",
+        "  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║ ",
+        "  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝ ",
+        "                                                     ",
+      }
 
-      local opts = {
-        theme = "doom",
-        hide = {
-          -- this is taken care of by lualine
-          -- enabling this messes up the actual laststatus setting after loading a file
-          statusline = false,
+      local function footer()
+        local datetime = os.date(" %Y-%m-%d") .. "  -  "
+        local author = "󰊠 " .. os.getenv("USER") .. "  -  "
+        local stats = require("lazy").stats()
+        local total_plugins = "󰪚 " .. stats.count .. " plugins" .. "  -  "
+        local version = vim.version()
+        local nvim_version_info = " v" .. version.major .. "." .. version.minor .. "." .. version.patch
+
+        return author .. datetime .. total_plugins .. nvim_version_info
+      end
+
+      dashboard.section.header.val = logo
+
+      dashboard.section.buttons.val = {
+        dashboard.button("o", "  Open CWD", "<cmd>doautocmd User DeferStart|ene|OpenTree<CR>"),
+        dashboard.button("p", "  Recent Projects", "<cmd>doautocmd User DeferStart|Telescope projects<CR>"),
+        dashboard.button("r", "  Recent File", "<cmd>doautocmd User DeferStart|Telescope oldfiles<CR>"),
+        dashboard.button("e", "  New file", "<cmd>doautocmd User DeferStart|ene<CR>"),
+        dashboard.button("f", "  Find File", "<cmd>doautocmd User DeferStart|Telescope find_files<CR>"),
+        dashboard.button("b", "  File Browser", "<cmd>doautocmd User DeferStart|Telescope file_browser<CR>"),
+        dashboard.button("s", "  Configuration", "<cmd>doautocmd User DeferStart|e $MYVIMRC|OpenTree<CR>"),
+        dashboard.button("u", "  Update Plugins", "<cmd>doautocmd User DeferStart|Lazy sync<CR>"),
+        dashboard.button("q", "  Quit", "<cmd>doautocmd User DeferStart|qa<cr>"),
+      }
+
+      dashboard.section.footer.val = footer()
+      dashboard.section.footer.opts.hl = "Constant"
+
+      dashboard.opts = {
+        layout = {
+          { type = "padding", val = 4 },
+          dashboard.section.header,
+          { type = "padding", val = 4 },
+          dashboard.section.buttons,
+          { type = "padding", val = 2 },
+          dashboard.section.footer,
         },
-        config = {
-          header = vim.split(logo, "\n"),
-          -- stylua: ignore
-          center = {
-            { action = 'lua LazyVim.pick()()',                           desc = " Find File",       icon = " ", key = "f" },
-            { action = "ene | startinsert",                              desc = " New File",        icon = " ", key = "n" },
-            { action = 'lua LazyVim.pick("oldfiles")()',                 desc = " Recent Files",    icon = " ", key = "r" },
-            { action = 'lua LazyVim.pick("live_grep")()',                desc = " Find Text",       icon = " ", key = "g" },
-            { action = 'lua LazyVim.pick.config_files()()',              desc = " Config",          icon = " ", key = "c" },
-            { action = 'lua require("persistence").load()',              desc = " Restore Session", icon = " ", key = "s" },
-            { action = "LazyExtras",                                     desc = " Lazy Extras",     icon = " ", key = "x" },
-            { action = "Lazy",                                           desc = " Lazy",            icon = "󰒲 ", key = "l" },
-            { action = function() vim.api.nvim_input("<cmd>qa<cr>") end, desc = " Quit",            icon = " ", key = "q" },
-          },
-          footer = function()
-            local stats = require("lazy").stats()
-            local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-            return { "⚡ Neovim loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms" }
-          end,
+        opts = {
+          margin = 5,
         },
       }
 
-      for _, button in ipairs(opts.config.center) do
-        button.desc = button.desc .. string.rep(" ", 43 - #button.desc)
-        button.key_format = "  %s"
-      end
+      alpha.setup(dashboard.opts)
 
-      -- open dashboard after closing lazy
-      if vim.o.filetype == "lazy" then
-        vim.api.nvim_create_autocmd("WinClosed", {
-          pattern = tostring(vim.api.nvim_get_current_win()),
-          once = true,
-          callback = function()
-            vim.schedule(function()
-              vim.api.nvim_exec_autocmds("UIEnter", { group = "dashboard" })
-            end)
-          end,
-        })
-      end
-
-      return opts
+      vim.api.nvim_create_augroup("alpha_tabline", { clear = true })
+      vim.api.nvim_create_autocmd("FileType", {
+        group = "alpha_tabline",
+        pattern = "alpha",
+        command = "set showtabline=0 laststatus=0 noruler",
+      })
+      vim.api.nvim_create_autocmd("FileType", {
+        group = "alpha_tabline",
+        pattern = "alpha",
+        callback = function()
+          vim.api.nvim_create_autocmd("BufUnload", {
+            group = "alpha_tabline",
+            buffer = 0,
+            command = "set showtabline=2 ruler laststatus=3",
+          })
+        end,
+      })
     end,
   },
 }
