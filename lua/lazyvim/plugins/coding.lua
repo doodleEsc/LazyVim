@@ -4,6 +4,7 @@ return {
   {
     "hrsh7th/nvim-cmp",
     version = false, -- last release is way too old
+    lazy = true,
     event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
@@ -23,7 +24,7 @@ return {
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
-      local auto_select = true
+      local auto_select = false
       return {
         enabled = function()
           local disabled = false
@@ -151,37 +152,37 @@ return {
         sorting = defaults.sorting,
       }
     end,
-    config = function(_, opts)
-      local cmp = require("cmp")
-      cmp.setup(opts)
+    -- config = function(_, opts)
+    --   local cmp = require("cmp")
+    --   cmp.setup(opts)
+    --
+    --   -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+    --   cmp.setup.cmdline("/", {
+    --     mapping = cmp.mapping.preset.cmdline(),
+    --     sources = {
+    --       { name = "buffer" },
+    --     },
+    --   })
+    --
+    --   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+    --   cmp.setup.cmdline(":", {
+    --     mapping = cmp.mapping.preset.cmdline({
+    --       ["<Up>"] = {
+    --         c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+    --       },
+    --       ["<Down>"] = {
+    --         c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    --       },
+    --     }),
+    --     sources = cmp.config.sources({
+    --       { name = "cmdline" },
+    --     }, {
+    --       { name = "async_path" },
+    --     }),
+    --   })
+    -- end,
 
-      -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-      cmp.setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer" },
-        },
-      })
-
-      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline({
-          ["<Up>"] = {
-            c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-          },
-          ["<Down>"] = {
-            c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-          },
-        }),
-        sources = cmp.config.sources({
-          { name = "cmdline" },
-        }, {
-          { name = "async_path" },
-        }),
-      })
-    end,
-
-    -- main = "lazyvim.util.cmp",
+    main = "lazyvim.util.cmp",
   },
 
   -- auto pairs

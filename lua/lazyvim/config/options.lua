@@ -53,12 +53,26 @@ vim.g.bigfile_size = 1024 * 1024 * 1.5 -- 1.5 MB
 -- You can disable this for a buffer by setting `vim.b.trouble_lualine = false`
 vim.g.trouble_lualine = true
 
+-- set custom
+vim.g.clipboard = {
+  name = "uniClipboard",
+  copy = {
+    ["+"] = "clipboard-provider copy",
+    ["*"] = "clipboard-provider copy",
+  },
+  paste = {
+    ["+"] = "clipboard-provider paste",
+    ["*"] = "clipboard-provider paste",
+  },
+  cache_enabled = 1,
+}
+
 local opt = vim.opt
 
 opt.autowrite = true -- Enable auto write
 -- only set clipboard if not in ssh, to make sure the OSC 52
 -- integration works automatically. Requires Neovim >= 0.10.0
-opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
+-- opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
 opt.completeopt = "menu,menuone,noselect"
 opt.conceallevel = 2 -- Hide * markup for bold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
@@ -89,7 +103,21 @@ opt.pumblend = 10 -- Popup blend
 opt.pumheight = 10 -- Maximum number of entries in a popup
 opt.relativenumber = false -- Relative line numbers
 opt.scrolloff = 4 -- Lines of context
-opt.sessionoptions = { "blank", "buffers", "curdir", "folds", "tabpages", "winsize", "help", "globals", "skiprtp" }
+-- opt.sessionoptions = { "blank", "buffers", "curdir", "folds", "tabpages", "winsize", "help", "globals", "skiprtp" }
+opt.sessionoptions = {
+  "blank",
+  "buffers",
+  "curdir",
+  "folds",
+  "help",
+  "tabpages",
+  "winsize",
+  "winpos",
+  -- "globals",
+  "terminal",
+  "options",
+  "localoptions",
+}
 -- buffers,curdir,folds,help,tabpages,winsize,winpos,globals
 opt.shiftround = true -- Round indent
 opt.shiftwidth = 2 -- Size of an indent

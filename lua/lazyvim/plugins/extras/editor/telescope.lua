@@ -4,8 +4,8 @@ if lazyvim_docs then
   vim.g.lazyvim_picker = "telescope"
 end
 
-local have_make = vim.fn.executable("make") == 1
-local have_cmake = vim.fn.executable("cmake") == 1
+-- local have_make = vim.fn.executable("make") == 1
+-- local have_cmake = vim.fn.executable("cmake") == 1
 
 ---@type LazyPicker
 local picker = {
@@ -55,6 +55,7 @@ return {
   -- directory is a git repo.
   {
     "nvim-telescope/telescope.nvim",
+    lazy = true,
     cmd = "Telescope",
     enabled = function()
       return LazyVim.pick.want() == "telescope"
@@ -62,10 +63,54 @@ return {
     version = false, -- telescope did only one release, so use HEAD for now
     dependencies = {
       {
+        "doodleEsc/project.nvim",
+        lazy = true,
+        opts = {
+          -- Methods of detecting the root directory. **"lsp"** uses the native neovim
+          -- lsp, while **"pattern"** uses vim-rooter like glob pattern matching. Here
+          -- order matters: if one is not detected, the other is used as fallback. You
+          -- can also delete or rearangne the detection methods.
+          detection_methods = { "lsp", "pattern" },
+
+          -- All the patterns used to detect root dir, when **"pattern"** is in
+          -- detection_methods
+          patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json" },
+          telescope_on_project_selected = function(path, open) end,
+        },
+        config = function(opts)
+          require("project_nvim").setup(opts)
+          LazyVim.on_load("telescope.nvim", function()
+            pcall(require("telescope").load_extension, "frecency")
+          end)
+        end,
+      },
+      {
+        "nvim-telescope/telescope-frecency.nvim",
+        lazy = true,
+        config = function(_)
+          LazyVim.on_load("telescope.nvim", function()
+            pcall(require("telescope").load_extension, "frecency")
+          end)
+        end,
+      },
+      {
+        "nvim-telescope/telescope-file-browser.nvim",
+        lazy = true,
+        config = function(_)
+          LazyVim.on_load("telescope.nvim", function()
+            pcall(require("telescope").load_extension, "file_browser")
+          end)
+        end,
+      },
+      {
         "nvim-telescope/telescope-fzf-native.nvim",
-        build = have_make and "make"
-          or "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
-        enabled = have_make or have_cmake,
+        -- build = have_make and "make"
+        --   or "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+        -- enabled = have_make or have_cmake,
+        build = "make",
+        enabled = function()
+          return vim.fn.executable("make") == 1 or vim.fn.executable("cmake") == 1
+        end,
         config = function(plugin)
           LazyVim.on_load("telescope.nvim", function()
             local ok, err = pcall(require("telescope").load_extension, "fzf")
@@ -183,6 +228,35 @@ return {
         defaults = {
           prompt_prefix = " ",
           selection_caret = " ",
+          sorting_strategy = "ascending",
+          scroll_strategy = "cycle",
+          vimgrep_arguments = {
+            "rg",
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
+            "--trim",
+          },
+
+          layout_strategy = "flex",
+          layout_config = {
+            horizontal = {
+              width = 0.9,
+              height = 0.9,
+              preview_cutoff = 120,
+              preview_width = 0.45,
+              prompt_position = "top",
+            },
+            vertical = {
+              height = 0.9,
+              width = 0.9,
+              preview_cutoff = 40,
+              prompt_position = "top",
+            },
+          },
           -- open files in the first window that is an actual file.
           -- use the current window if no other window is available.
           get_selection_window = function()
@@ -198,18 +272,41 @@ return {
           end,
           mappings = {
             i = {
-              ["<c-t>"] = open_with_trouble,
-              ["<a-t>"] = open_with_trouble,
-              ["<a-i>"] = find_files_no_ignore,
-              ["<a-h>"] = find_files_with_hidden,
-              ["<C-Down>"] = actions.cycle_history_next,
-              ["<C-Up>"] = actions.cycle_history_prev,
+              -- ["<c-t>"] = open_with_trouble,
+              -- ["<a-t>"] = open_with_trouble,
+              -- ["<a-i>"] = find_files_no_ignore,
+              -- ["<a-h>"] = find_files_with_hidden,
+              -- ["<C-Down>"] = actions.cycle_history_next,
+              -- ["<C-Up>"] = actions.cycle_history_prev,
+
+              ["<CR>"] = actions.select_default,
               ["<C-f>"] = actions.preview_scrolling_down,
               ["<C-b>"] = actions.preview_scrolling_up,
+              ["<C-u>"] = actions.results_scrolling_up,
+              ["<C-d>"] = actions.results_scrolling_down,
+              ["<C-c>"] = actions.close,
             },
             n = {
               ["q"] = actions.close,
+              ["<C-c>"] = actions.close,
             },
+          },
+        },
+        extensions = {
+          ["telescope-tabs"] = {
+            show_preview = false,
+          },
+          file_browser = {
+            -- theme = "ivy",
+            -- disables netrw and use telescope-file-browser in its place
+            hijack_netrw = true,
+          },
+          fzf = {
+            fuzzy = true, -- false will only do exact matching
+            override_generic_sorter = true, -- override the generic sorter
+            override_file_sorter = true, -- override the file sorter
+            case_mode = "smart_case", -- or "ignore_case" or "respect_case"
+            -- the default case_mode is "smart_case"
           },
         },
         pickers = {

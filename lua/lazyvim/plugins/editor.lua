@@ -3,10 +3,38 @@ return {
   -- file explorer
   {
     "nvim-tree/nvim-tree.lua",
-    -- lazy = true,
     cmd = { "NvimTreeOpen", "NvimTreeToggle", "NvimTreeClose" },
+    event = { "SessionLoadPost" },
+    init = function()
+      vim.api.nvim_create_autocmd({ "SessionLoadPost" }, {
+        callback = function()
+          vim.defer_fn(function()
+            local api = require("nvim-tree.api")
+            local view = require("nvim-tree.view")
+
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+              local name = vim.api.nvim_buf_get_name(buf)
+              if name:match("NvimTree*") then
+                if not view.is_visible() then
+                  api.tree.toggle({ focus = false, find_file = true })
+                end
+                break
+              end
+            end
+          end, 1) -- Jank defer to give lazy time to init the plugin, just 1 works for me increase as needed
+        end,
+      })
+    end,
     keys = {
-      { "<leader>tt", "<Cmd>NvimTreeToggle<CR>", desc = "Toggle File Explorer" },
+      {
+        "<leader>tt",
+        function()
+          local api = require("nvim-tree.api")
+          api.tree.toggle()
+        end,
+        desc = "Toggle File Explorer",
+      },
+
       {
         "<leader>tr",
         function()
@@ -322,6 +350,7 @@ return {
           mode = { "n", "v" },
           { "<leader><tab>", group = "tabs" },
           { "<leader>c", group = "code" },
+          { "<leader>t", group = "tree" },
           { "<leader>f", group = "file/find" },
           { "<leader>g", group = "git" },
           { "<leader>gh", group = "hunks" },
@@ -385,7 +414,8 @@ return {
   -- hunks in a commit.
   {
     "lewis6991/gitsigns.nvim",
-    event = "LazyFile",
+    -- event = "LazyFile",
+    event = "VeryLazy",
     opts = {
       signs = {
         add = { text = "▎" },

@@ -2,7 +2,8 @@ return {
   -- lspconfig
   {
     "neovim/nvim-lspconfig",
-    event = "LazyFile",
+    lazy = true,
+    event = "VeryLazy",
     dependencies = {
       "mason.nvim",
       { "williamboman/mason-lspconfig.nvim", config = function() end },
@@ -243,6 +244,7 @@ return {
           ),
           handlers = { setup },
         })
+        mlsp.setup_handlers({ setup })
       end
 
       if LazyVim.lsp.is_enabled("denols") and LazyVim.lsp.is_enabled("vtsls") then
