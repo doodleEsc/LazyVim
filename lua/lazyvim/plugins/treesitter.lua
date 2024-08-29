@@ -29,7 +29,7 @@ return {
     end,
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     keys = {
-      { "<c-space>", desc = "Increment Selection" },
+      { "<Tab>", desc = "Increment Selection" },
       { "<bs>", desc = "Decrement Selection", mode = "x" },
     },
     opts_extend = { "ensure_installed" },
@@ -70,8 +70,12 @@ return {
       incremental_selection = {
         enable = true,
         keymaps = {
-          init_selection = "<C-space>",
-          node_incremental = "<C-space>",
+          -- init_selection = "<C-space>",
+          -- node_incremental = "<C-space>",
+          -- scope_incremental = false,
+          -- node_decremental = "<bs>",
+          init_selection = "<Tab>",
+          node_incremental = "<Tab>",
           scope_incremental = false,
           node_decremental = "<bs>",
         },
@@ -132,7 +136,7 @@ return {
   -- Automatically add closing tags for HTML and JSX
   {
     "windwp/nvim-ts-autotag",
-    event = "LazyFile",
+    event = "VeryLazy",
     opts = {},
   },
 }

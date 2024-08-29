@@ -84,11 +84,27 @@ end
 
 return {
   {
-    "ahmedkhalf/project.nvim",
+    "doodleEsc/project.nvim",
     opts = {
       manual_mode = true,
+      telescope_on_project_selected = function(path, open)
+        require("persistence").load({ name = path, branch = true })
+      end,
     },
     event = "VeryLazy",
+    dependencies = {
+      {
+        "doodleEsc/persistence.nvim",
+        lazy = true,
+        opts = {
+          dir = vim.fn.stdpath("state") .. "/sessions/", -- directory where session files are saved
+          -- minimum number of file buffers that need to be open to save
+          -- Set to 0 to always save
+          need = 1,
+          branch = true, -- use git branch to save session
+        },
+      },
+    },
     config = function(_, opts)
       require("project_nvim").setup(opts)
       LazyVim.on_load("telescope.nvim", function()
@@ -117,10 +133,8 @@ return {
     "goolord/alpha-nvim",
     optional = true,
     opts = function(_, dashboard)
-      local button = dashboard.button("p", " " .. " Projects", pick)
-      button.opts.hl = "AlphaButtons"
-      button.opts.hl_shortcut = "AlphaShortcut"
-      table.insert(dashboard.section.buttons.val, 4, button)
+      local button = dashboard.button("p", " " .. " Find Projects", pick)
+      table.insert(dashboard.section.buttons.val, 2, button)
     end,
   },
 

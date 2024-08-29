@@ -2,7 +2,7 @@ return {
   -- none-ls
   {
     "nvimtools/none-ls.nvim",
-    event = "LazyFile",
+    event = "VeryLazy",
     dependencies = { "mason.nvim" },
     init = function()
       LazyVim.on_very_lazy(function()
@@ -33,10 +33,12 @@ return {
       opts.root_dir = opts.root_dir
         or require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git")
       opts.sources = vim.list_extend(opts.sources or {}, {
-        nls.builtins.formatting.fish_indent,
-        nls.builtins.diagnostics.fish,
-        nls.builtins.formatting.stylua,
+        -- nls.builtins.formatting.fish_indent,
+        -- nls.builtins.diagnostics.fish,
+        -- nls.builtins.formatting.stylua,
         nls.builtins.formatting.shfmt,
+        nls.builtins.code_actions.gitsigns,
+        nls.builtins.formatting.stylua,
       })
     end,
   },

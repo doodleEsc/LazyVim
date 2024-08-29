@@ -10,6 +10,7 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "FelipeLema/cmp-async-path",
+      "onsails/lspkind.nvim",
     },
     -- Not all LSP servers add brackets when completing a function.
     -- To better deal with this, LazyVim adds a custom option to cmp,
@@ -23,6 +24,7 @@ return {
     opts = function()
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
+      local lspkind = require("lspkind")
       local defaults = require("cmp.config.default")()
       local auto_select = false
       return {
@@ -39,18 +41,6 @@ return {
           completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect"),
         },
         preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None,
-        -- mapping = cmp.mapping.preset.insert({
-        --   ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-        --   ["<C-f>"] = cmp.mapping.scroll_docs(4),
-        --   ["<C-Space>"] = cmp.mapping.complete(),
-        --   ["<CR>"] = LazyVim.cmp.confirm({ select = auto_select }),
-        --   ["<C-y>"] = LazyVim.cmp.confirm({ select = true }),
-        --   ["<S-CR>"] = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-        --   ["<C-CR>"] = function(fallback)
-        --     cmp.abort()
-        --     fallback()
-        --   end,
-        -- }),
         mapping = {
           ["<CR>"] = cmp.mapping({
             i = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
@@ -123,27 +113,47 @@ return {
         }, {
           { name = "buffer" },
         }),
+        -- window = {
+        --   completion = {
+        --     border = "rounded",
+        --     winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+        --   },
+        --   documentation = {
+        --     -- max_height = math.floor(WIDE_HEIGHT * (WIDE_HEIGHT / vim.o.lines)),
+        --     -- max_width = math.floor((WIDE_HEIGHT * 2) * (vim.o.columns / (WIDE_HEIGHT * 2 * 16 / 9))),
+        --     border = "rounded",
+        --     winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+        --   },
+        -- },
         formatting = {
-          format = function(entry, item)
-            local icons = LazyVim.config.icons.kinds
-            if icons[item.kind] then
-              item.kind = icons[item.kind] .. item.kind
-            end
+          format = lspkind.cmp_format({
+            mode = "symbol_text",
+            maxwidth = 50,
+            ellipsis_char = "...",
+            symbol_map = { Codeium = "" },
 
-            local widths = {
-              abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or 40,
-              menu = vim.g.cmp_widths and vim.g.cmp_widths.menu or 30,
-            }
+            before = function(entry, vim_item)
+              local word = vim_item.abbr
 
-            for key, width in pairs(widths) do
-              if item[key] and vim.fn.strdisplaywidth(item[key]) > width then
-                item[key] = vim.fn.strcharpart(item[key], 0, width - 1) .. "…"
+              if string.sub(word, -1, -1) == "~" then
+                word = string.sub(word, 0, -2)
               end
-            end
+              vim_item.abbr = word
 
-            return item
-          end,
+              vim_item.menu = ({
+                nvim_lsp = "[LSP]",
+                buffer = "[BUF]",
+                luasnip = "[SNP]",
+                path = "[PATH]",
+                look = "[LOOK]",
+                treesitter = "[TS]",
+                codeium = "[CODEIUM]",
+              })[entry.source.name]
+              return vim_item
+            end,
+          }),
         },
+
         experimental = {
           ghost_text = {
             hl_group = "CmpGhostText",
@@ -152,36 +162,6 @@ return {
         sorting = defaults.sorting,
       }
     end,
-    -- config = function(_, opts)
-    --   local cmp = require("cmp")
-    --   cmp.setup(opts)
-    --
-    --   -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-    --   cmp.setup.cmdline("/", {
-    --     mapping = cmp.mapping.preset.cmdline(),
-    --     sources = {
-    --       { name = "buffer" },
-    --     },
-    --   })
-    --
-    --   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-    --   cmp.setup.cmdline(":", {
-    --     mapping = cmp.mapping.preset.cmdline({
-    --       ["<Up>"] = {
-    --         c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-    --       },
-    --       ["<Down>"] = {
-    --         c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-    --       },
-    --     }),
-    --     sources = cmp.config.sources({
-    --       { name = "cmdline" },
-    --     }, {
-    --       { name = "async_path" },
-    --     }),
-    --   })
-    -- end,
-
     main = "lazyvim.util.cmp",
   },
 

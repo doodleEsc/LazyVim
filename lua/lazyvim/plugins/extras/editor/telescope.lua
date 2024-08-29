@@ -63,28 +63,6 @@ return {
     version = false, -- telescope did only one release, so use HEAD for now
     dependencies = {
       {
-        "doodleEsc/project.nvim",
-        lazy = true,
-        opts = {
-          -- Methods of detecting the root directory. **"lsp"** uses the native neovim
-          -- lsp, while **"pattern"** uses vim-rooter like glob pattern matching. Here
-          -- order matters: if one is not detected, the other is used as fallback. You
-          -- can also delete or rearangne the detection methods.
-          detection_methods = { "lsp", "pattern" },
-
-          -- All the patterns used to detect root dir, when **"pattern"** is in
-          -- detection_methods
-          patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json" },
-          telescope_on_project_selected = function(path, open) end,
-        },
-        config = function(opts)
-          require("project_nvim").setup(opts)
-          LazyVim.on_load("telescope.nvim", function()
-            pcall(require("telescope").load_extension, "frecency")
-          end)
-        end,
-      },
-      {
         "nvim-telescope/telescope-frecency.nvim",
         lazy = true,
         config = function(_)
