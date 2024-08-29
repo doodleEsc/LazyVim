@@ -7,8 +7,6 @@ return {
   {
     "doodleEsc/alpha-nvim",
     event = "VimEnter",
-    dev = true,
-    -- enabled = true,
     enabled = vim.fn.argc(-1) == 0,
     init = false,
     opts = function()
