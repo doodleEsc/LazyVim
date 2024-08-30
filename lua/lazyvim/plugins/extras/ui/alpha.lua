@@ -79,8 +79,8 @@ return {
 
           local stats = require("lazy").stats()
           local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          local plugin_info = "a " .. stats.loaded .. "/" .. stats.count .. " plugins" .. "  -  "
-          local load_cost = "t " .. ms .. "ms"
+          local plugin_info = "󰚥 " .. stats.loaded .. "/" .. stats.count .. " plugins" .. "  -  "
+          local load_cost = "󱎫 " .. ms .. "ms"
 
           local footer = author .. datetime .. nvim_version_info .. plugin_info .. load_cost
           dashboard.section.footer.val = footer
