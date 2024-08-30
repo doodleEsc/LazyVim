@@ -86,7 +86,7 @@ return {
   {
     "doodleEsc/project.nvim",
     opts = {
-      manual_mode = true,
+      manual_mode = false,
       telescope_on_project_selected = function(path, open)
         require("persistence").load({ name = path, branch = true })
       end,
@@ -103,6 +103,16 @@ return {
           need = 1,
           branch = true, -- use git branch to save session
         },
+        config = function(opts)
+          require("persistence").setup(opts)
+          -- Auto create dir when saving a file, in case some intermediate directory does not exist
+          vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+            group = vim.api.nvim_create_augroup("lazyvim_save_session", { clear = true }),
+            callback = function(event)
+              require("persistence").save()
+            end,
+          })
+        end,
       },
     },
     config = function(_, opts)
@@ -130,7 +140,7 @@ return {
   },
 
   {
-    "goolord/alpha-nvim",
+    "doodleEsc/alpha-nvim",
     optional = true,
     opts = function(_, dashboard)
       local button = dashboard.button("p", " " .. " Find Projects", pick)

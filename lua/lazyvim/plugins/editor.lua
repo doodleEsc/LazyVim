@@ -215,6 +215,8 @@ return {
       local codicons = require("codicons")
       require("nvim-tree").setup({
         -- BEGIN_DEFAULT_OPTS
+        sync_root_with_cwd = true,
+        respect_buf_cwd = true,
         auto_reload_on_write = true,
         disable_netrw = true,
         hijack_cursor = true,
@@ -223,9 +225,7 @@ return {
         sort_by = LazyVim.tree.sort_by,
         root_dirs = {},
         prefer_startup_root = false,
-        sync_root_with_cwd = true,
         reload_on_bufenter = false,
-        respect_buf_cwd = true,
         on_attach = LazyVim.tree.on_attach,
         select_prompts = false,
         view = {
@@ -323,8 +323,8 @@ return {
           auto_open = true,
         },
         update_focused_file = {
-          enable = false,
-          update_cwd = false,
+          enable = true,
+          update_cwd = true,
           ignore_list = {},
         },
         system_open = {

@@ -61,7 +61,7 @@ return {
         options = {
           theme = "auto",
           globalstatus = vim.o.laststatus == 3,
-          disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter" } },
+          disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter", "floaterm" } },
         },
         sections = {
           lualine_a = { "mode" },
@@ -206,6 +206,7 @@ return {
   -- Highly experimental plugin that completely replaces the UI for messages, cmdline and the popupmenu.
   {
     "folke/noice.nvim",
+    enabled = true,
     event = "VeryLazy",
     opts = {
       lsp = {
