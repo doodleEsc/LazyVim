@@ -4,6 +4,8 @@
 -- use `vim.keymap.set` instead
 local map = LazyVim.safe_keymap_set
 
+map("n", "Y", "y$", { desc = "Copy to End" })
+
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })

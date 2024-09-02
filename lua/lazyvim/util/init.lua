@@ -19,6 +19,7 @@ local LazyUtil = require("lazy.core.util")
 ---@field pick lazyvim.util.pick
 ---@field cmp lazyvim.util.cmp
 ---@field tree lazyvim.util.tree
+---@field hydra lazyvim.util.hydra
 local M = {}
 
 ---@type table<string, string|string[]>
@@ -285,6 +286,14 @@ function M.memoize(fn)
     end
     return cache[fn][key]
   end
+end
+
+--- fire event
+---@param event string
+function M.fire(event)
+  vim.api.nvim_exec_autocmds("User", {
+    pattern = event,
+  })
 end
 
 return M

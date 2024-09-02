@@ -10,6 +10,189 @@ local function get_args(config)
   return config
 end
 
+local dap_hydra_factory = function()
+  local hint = [[
+ _<F5>_       : Continue
+ _<S-F5>_     : Run with Args
+ _<F6>_       : Pause
+ _<F9>_       : Toggle Breakpoint
+ _<S-F9>_     : Breakpoint Condition
+ _<F10>_      : Step Over
+ _<F11>_      : Step Into
+ _<S-F11>_    : Step Out
+ _<F4>_       : Terminate
+ ^
+ _<leader>dc_ : Run to Cursor
+ _<leader>dg_ : Go to Line (No Execute)
+ _<leader>dj_ : Down
+ _<leader>dk_ : Up
+ _<leader>dl_ : Run Last
+ _<leader>dr_ : Toggle REPL
+ _<leader>ds_ : Session
+ _<leader>dw_ : Widgets
+ ^
+ _<Esc>_      : Terminate And Exit
+]]
+
+  local Hydra = require("hydra")
+  local cmd = require("hydra.keymap-util").cmd
+  local dap_hydra = Hydra({
+    name = "Dap",
+    hint = hint,
+    config = {
+      invoke_on_body = false,
+      color = "pink",
+      hint = {
+        position = "top-right",
+        float_opts = {
+          -- row, col, height, width, relative, and anchor should not be
+          -- overridden
+          style = "minimal",
+          focusable = false,
+          noautocmd = true,
+        },
+      },
+      on_enter = function()
+        require("persistent-breakpoints.api").load_breakpoints()
+      end,
+      on_exit = function()
+        local dap = require("dap")
+        if dap.session() ~= nil then
+          require("dap").terminate()
+        end
+      end,
+    },
+    mode = "n",
+    heads = {
+
+      {
+        "<F9>",
+        function()
+          require("persistent-breakpoints.api").toggle_breakpoint()
+        end,
+        desc = "Toggle Breakpoint",
+      },
+      {
+        "<S-F9>",
+        function()
+          require("persistent-breakpoints.api").set_conditional_breakpoint()
+        end,
+        desc = "Breakpoint Condition",
+      },
+
+      {
+        "<F5>",
+        function()
+          require("dap").continue()
+        end,
+        desc = "Continue",
+      },
+      {
+        "<S-F5>",
+        function()
+          require("dap").continue({ before = get_args })
+        end,
+        desc = "Run with Args",
+      },
+
+      {
+        "<F10>",
+        function()
+          require("dap").step_over()
+        end,
+        desc = "Step Over",
+      },
+      {
+        "<F11>",
+        function()
+          require("dap").step_into()
+        end,
+        desc = "Step Into",
+      },
+      {
+        "<S-F11>",
+        function()
+          require("dap").step_out()
+        end,
+        desc = "Step Out",
+      },
+
+      {
+        "<F4>",
+        function()
+          require("dap").terminate()
+        end,
+        desc = "Terminate",
+      },
+      {
+        "<F6>",
+        function()
+          require("dap").pause()
+        end,
+        desc = "Pause",
+      },
+
+      {
+        "<leader>dc",
+        function()
+          require("dap").run_to_cursor()
+        end,
+        desc = "Run to Cursor",
+      },
+      {
+        "<leader>dg",
+        function()
+          require("dap").goto_()
+        end,
+        desc = "Go to Line (No Execute)",
+      },
+      {
+        "<leader>dj",
+        function()
+          require("dap").down()
+        end,
+        desc = "Down",
+      },
+      {
+        "<leader>dk",
+        function()
+          require("dap").up()
+        end,
+        desc = "Up",
+      },
+      {
+        "<leader>dl",
+        function()
+          require("dap").run_last()
+        end,
+        desc = "Run Last",
+      },
+      {
+        "<leader>dr",
+        function()
+          require("dap").repl.toggle()
+        end,
+        desc = "Toggle REPL",
+      },
+      {
+        "<leader>ds",
+        function()
+          require("dap").session()
+        end,
+        desc = "Session",
+      },
+      {
+        "<leader>dw",
+        function()
+          require("dap.ui.widgets").hover()
+        end,
+        desc = "Widgets",
+      },
+    },
+  })
+  return dap_hydra
+end
+
 return {
   {
     "mfussenegger/nvim-dap",
@@ -23,27 +206,39 @@ return {
         "theHamsta/nvim-dap-virtual-text",
         opts = {},
       },
+      {
+        "Weissle/persistent-breakpoints.nvim",
+        opts = {
+          load_breakpoints_event = nil,
+        },
+      },
     },
 
     -- stylua: ignore
     keys = {
       { "<leader>d", "", desc = "+debug", mode = {"n", "v"} },
-      { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
-      { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
-      { "<leader>dc", function() require("dap").continue() end, desc = "Continue" },
-      { "<leader>da", function() require("dap").continue({ before = get_args }) end, desc = "Run with Args" },
-      { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" },
+      { "<leader>dd", function() LazyVim.hydra.run("dap") end, desc = "Load Breakpoints" },
+
+      { "<F9>", function() require("persistent-breakpoints.api").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
+      { "<S-F9>", function() require("persistent-breakpoints.api").set_conditional_breakpoint() end, desc = "Breakpoint Condition" },
+
+      { "<F5>", function() require("dap").continue() end, desc = "Continue" },
+      { "<S-F5>", function() require("dap").continue({ before = get_args }) end, desc = "Run with Args" },
+
+      { "<F10>", function() require("dap").step_over() end, desc = "Step Over" },
+      { "<F11>", function() require("dap").step_into() end, desc = "Step Into" },
+      { "<S-F11>", function() require("dap").step_out() end, desc = "Step Out" },
+
+      { "<F4>", function() require("dap").terminate() end, desc = "Terminate" },
+      { "<F6>", function() require("dap").pause() end, desc = "Pause" },
+
+      { "<leader>dc", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" },
       { "<leader>dg", function() require("dap").goto_() end, desc = "Go to Line (No Execute)" },
-      { "<leader>di", function() require("dap").step_into() end, desc = "Step Into" },
       { "<leader>dj", function() require("dap").down() end, desc = "Down" },
       { "<leader>dk", function() require("dap").up() end, desc = "Up" },
       { "<leader>dl", function() require("dap").run_last() end, desc = "Run Last" },
-      { "<leader>do", function() require("dap").step_out() end, desc = "Step Out" },
-      { "<leader>dO", function() require("dap").step_over() end, desc = "Step Over" },
-      { "<leader>dp", function() require("dap").pause() end, desc = "Pause" },
       { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle REPL" },
       { "<leader>ds", function() require("dap").session() end, desc = "Session" },
-      { "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
       { "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
     },
 
@@ -74,6 +269,9 @@ return {
       if vim.fn.filereadable(".vscode/launch.json") then
         vscode.load_launchjs()
       end
+
+      -- add dap hydra
+      LazyVim.hydra.add("dap", dap_hydra_factory)
     end,
   },
 
