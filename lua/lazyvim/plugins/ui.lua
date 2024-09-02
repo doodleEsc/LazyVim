@@ -430,6 +430,7 @@ return {
   {
     "folke/noice.nvim",
     enabled = true,
+    tag = "v4.4.7",
     event = "VeryLazy",
     opts = {
       lsp = {
