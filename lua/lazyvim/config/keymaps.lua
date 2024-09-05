@@ -6,6 +6,12 @@ local map = LazyVim.safe_keymap_set
 
 map("n", "Y", "y$", { desc = "Copy to End" })
 
+vim.keymap.set("i", "<C-f>", "<Right>", { noremap = true, silent = true, desc = "Move Cursor to Next" })
+vim.keymap.set("i", "<C-b>", "<Left>", { noremap = true, silent = true, desc = "Move Cursor to Previous" })
+map("i", "<C-h>", "<BS>", { desc = "Delete Previous Character" })
+map("i", "<C-a>", "<Esc>^i", { desc = "Insert Before First Character" })
+map("i", "<C-e>", "<Esc>A", { desc = "Insert After Last Character" })
+
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
