@@ -62,15 +62,15 @@ return {
     end,
     version = false, -- telescope did only one release, so use HEAD for now
     dependencies = {
-      {
-        "nvim-telescope/telescope-frecency.nvim",
-        lazy = true,
-        config = function(_)
-          LazyVim.on_load("telescope.nvim", function()
-            pcall(require("telescope").load_extension, "frecency")
-          end)
-        end,
-      },
+      -- {
+      --   "nvim-telescope/telescope-frecency.nvim",
+      --   lazy = true,
+      --   config = function(_)
+      --     LazyVim.on_load("telescope.nvim", function()
+      --       pcall(require("telescope").load_extension, "frecency")
+      --     end)
+      --   end,
+      -- },
       {
         "nvim-telescope/telescope-file-browser.nvim",
         lazy = true,

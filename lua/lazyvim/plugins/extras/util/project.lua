@@ -96,6 +96,7 @@ return {
       {
         "doodleEsc/persistence.nvim",
         lazy = true,
+        dev = true,
         opts = {
           dir = vim.fn.stdpath("state") .. "/sessions/", -- directory where session files are saved
           -- minimum number of file buffers that need to be open to save
@@ -103,7 +104,7 @@ return {
           need = 1,
           branch = true, -- use git branch to save session
         },
-        config = function(opts)
+        config = function(_, opts)
           require("persistence").setup(opts)
           -- Auto create dir when saving a file, in case some intermediate directory does not exist
           vim.api.nvim_create_autocmd({ "BufWritePost" }, {
