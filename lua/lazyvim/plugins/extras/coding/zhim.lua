@@ -4,6 +4,7 @@ return {
     lazy = true,
     event = "VeryLazy",
     opts = {
+      enabled = true,
 
       -- im-select binary's name, or the binary's full path
       command = { "im-select.exe" },
