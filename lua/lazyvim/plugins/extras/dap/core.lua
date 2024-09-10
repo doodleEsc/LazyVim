@@ -216,7 +216,6 @@ return {
 
     -- stylua: ignore
     keys = {
-      { "<leader>d", "", desc = "+debug", mode = {"n", "v"} },
       { "<leader>dd", function() LazyVim.hydra.run("dap") end, desc = "Load Breakpoints" },
 
       { "<F9>", function() require("persistent-breakpoints.api").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
@@ -323,5 +322,15 @@ return {
     },
     -- mason-nvim-dap is loaded when nvim-dap loads
     config = function() end,
+  },
+
+  {
+
+    "folke/which-key.nvim",
+    optional = true,
+    opts = function(_, opts)
+      local group = { "<leader>d", group = "+debug" }
+      table.insert(opts["spec"][1], group)
+    end,
   },
 }

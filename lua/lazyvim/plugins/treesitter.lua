@@ -31,6 +31,18 @@ return {
     keys = {
       { "<Tab>", desc = "Increment Selection" },
       { "<bs>", desc = "Decrement Selection", mode = "x" },
+      {
+        "<leader>tn",
+        function()
+          local cursor_pos = vim.api.nvim_win_get_cursor(0)
+          local row, col = cursor_pos[1] - 1, cursor_pos[2]
+          local success, node = pcall(vim.treesitter.get_node, { pos = { row, col } })
+          if success then
+            vim.notify(node:type())
+          end
+        end,
+        desc = "Show Treesitter Node Type",
+      },
     },
     opts_extend = { "ensure_installed" },
     ---@type TSConfig

@@ -2,8 +2,8 @@ return {
   {
     "hedyhli/outline.nvim",
     keys = {
-      { "<leader>j", "", desc = "Outline" },
-      { "<leader>jj", "<cmd>Outline<cr>", desc = "Toggle Outline" },
+      { "<leader>j", "", desc = "+Outline", mode = "n" },
+      { "<leader>jj", "<cmd>Outline<cr>", desc = "Toggle Outline", group = "Outline" },
     },
     cmd = "Outline",
     opts = function()
@@ -26,6 +26,16 @@ return {
         }
       end
       return opts
+    end,
+  },
+
+  {
+
+    "folke/which-key.nvim",
+    optional = true,
+    opts = function(_, opts)
+      local group = { "<leader>j", group = "+outline" }
+      table.insert(opts["spec"][1], group)
     end,
   },
 
