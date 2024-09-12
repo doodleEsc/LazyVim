@@ -3,6 +3,15 @@ return {
     "doodleEsc/zhim.nvim",
     lazy = true,
     event = "VeryLazy",
+    keys = {
+      {
+        "<leader>zh",
+        function()
+          require("zhim").toggle()
+        end,
+        desc = "Toggle IM Change",
+      },
+    },
     opts = {
       enabled = true,
 

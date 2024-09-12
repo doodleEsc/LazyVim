@@ -114,7 +114,7 @@ opt.sessionoptions = {
   "tabpages",
   "winsize",
   "winpos",
-  -- "globals",
+  "globals",
   "terminal",
   "options",
   "localoptions",
