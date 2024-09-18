@@ -96,7 +96,6 @@ return {
       {
         "doodleEsc/persistence.nvim",
         lazy = true,
-        dev = true,
         opts = {
           dir = vim.fn.stdpath("state") .. "/sessions/", -- directory where session files are saved
           -- minimum number of file buffers that need to be open to save
