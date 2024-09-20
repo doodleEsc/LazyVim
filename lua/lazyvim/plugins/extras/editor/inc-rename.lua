@@ -12,6 +12,9 @@ return {
   -- LSP Keymaps
   {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      "smjonas/inc-rename.nvim",
+    },
     opts = function()
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       keys[#keys + 1] = {
