@@ -33,7 +33,7 @@ return {
       -- enabled treesitter nodes
       nodes = { "comment", "comment_content", "string", "string_content" },
 
-      ft = { "markdown" },
+      ft = { "markdown", "AvanteInput" },
     },
   },
 }

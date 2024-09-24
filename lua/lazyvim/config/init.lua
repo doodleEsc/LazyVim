@@ -298,6 +298,7 @@ function M.init()
   end
 
   LazyVim.plugin.setup()
+  LazyVim.env.load()
   M.json.load()
 end
 

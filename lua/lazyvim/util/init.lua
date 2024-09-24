@@ -20,6 +20,7 @@ local LazyUtil = require("lazy.core.util")
 ---@field cmp lazyvim.util.cmp
 ---@field tree lazyvim.util.tree
 ---@field hydra lazyvim.util.hydra
+---@field hydra lazyvim.util.env
 local M = {}
 
 ---@type table<string, string|string[]>
