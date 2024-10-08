@@ -2,7 +2,6 @@ return {
   {
     "yetone/avante.nvim",
     event = "VeryLazy",
-    dev = false,
     lazy = true,
     version = false, -- set this if you want to always pull the latest change
     build = "make",
