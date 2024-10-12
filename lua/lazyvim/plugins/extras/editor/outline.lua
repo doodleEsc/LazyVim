@@ -2,13 +2,28 @@ return {
   {
     "hedyhli/outline.nvim",
     keys = {
-      { "<leader>j", "", desc = "+Outline", mode = "n" },
-      { "<leader>jj", "<cmd>Outline<cr>", desc = "Toggle Outline", group = "Outline" },
+      { "<leader>cs", "<cmd>Outline<cr>", desc = "Outline (Symbols)" },
     },
     cmd = "Outline",
     opts = function()
       local defaults = require("outline.config").defaults
       local opts = {
+        symbol_folding = {
+          -- Depth past which nodes will be folded by default. Set to false to unfold all on open.
+          autofold_depth = 2,
+          -- When to auto unfold nodes
+          auto_unfold = {
+            -- Auto unfold currently hovered symbol
+            hovered = true,
+            -- Auto fold when the root level only has this many nodes.
+            -- Set true for 1 node, false for 0.
+            only = true,
+          },
+          markers = { "", "" },
+        },
+        preview_window = {
+          auto_preview = false,
+        },
         symbols = {
           icons = {},
           filter = vim.deepcopy(LazyVim.config.kind_filter),
@@ -30,13 +45,11 @@ return {
   },
 
   {
-
-    "folke/which-key.nvim",
+    "folke/trouble.nvim",
     optional = true,
-    opts = function(_, opts)
-      local group = { "<leader>j", group = "+outline" }
-      table.insert(opts["spec"][1], group)
-    end,
+    keys = {
+      { "<leader>cs", false },
+    },
   },
 
   -- -- edgy integration

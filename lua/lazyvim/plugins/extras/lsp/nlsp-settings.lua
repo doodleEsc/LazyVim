@@ -1,7 +1,8 @@
 return {
   {
     "tamago324/nlsp-settings.nvim",
-    event = "VeryLazy",
+    lazy = true,
+    command = { "LspSetting" },
     opts = {
       config_home = vim.fn.stdpath("config") .. "/nlsp-settings",
       local_settings_dir = ".nlsp-settings",

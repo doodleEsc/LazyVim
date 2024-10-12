@@ -10,6 +10,7 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "FelipeLema/cmp-async-path",
+      "lukas-reineke/cmp-under-comparator",
       "onsails/lspkind.nvim",
     },
     -- Not all LSP servers add brackets when completing a function.
@@ -159,7 +160,19 @@ return {
             hl_group = "CmpGhostText",
           },
         },
-        sorting = defaults.sorting,
+        -- sorting = defaults.sorting,
+        sorting = {
+          comparators = {
+            cmp.config.compare.offset,
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            require("cmp-under-comparator").under,
+            cmp.config.compare.kind,
+            cmp.config.compare.sort_text,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+          },
+        },
       }
     end,
     main = "lazyvim.util.cmp",
