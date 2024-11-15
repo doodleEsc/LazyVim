@@ -39,6 +39,7 @@ return {
         nls.builtins.formatting.shfmt,
         nls.builtins.code_actions.gitsigns,
         nls.builtins.formatting.stylua,
+        nls.builtins.formatting.prettier,
       })
     end,
   },
