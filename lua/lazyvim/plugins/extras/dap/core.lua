@@ -1,11 +1,17 @@
----@param config {args?:string[]|fun():string[]?}
+---@param config {type?:string, args?:string[]|fun():string[]?}
 local function get_args(config)
-  local args = type(config.args) == "function" and (config.args() or {}) or config.args or {}
+  local args = type(config.args) == "function" and (config.args() or {}) or config.args or {} --[[@as string[] | string ]]
+  local args_str = type(args) == "table" and table.concat(args, " ") or args --[[@as string]]
+
   config = vim.deepcopy(config)
   ---@cast args string[]
   config.args = function()
-    local new_args = vim.fn.input("Run with args: ", table.concat(args, " ")) --[[@as string]]
-    return vim.split(vim.fn.expand(new_args) --[[@as string]], " ")
+    local new_args = vim.fn.expand(vim.fn.input("Run with args: ", args_str)) --[[@as string]]
+    if config.type and config.type == "java" then
+      ---@diagnostic disable-next-line: return-type-mismatch
+      return new_args
+    end
+    return require("dap.utils").splitstr(new_args)
   end
   return config
 end
@@ -217,20 +223,15 @@ return {
     -- stylua: ignore
     keys = {
       { "<leader>dd", function() LazyVim.hydra.run("dap") end, desc = "Load Breakpoints" },
-
       { "<F9>", function() require("persistent-breakpoints.api").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
       { "<S-F9>", function() require("persistent-breakpoints.api").set_conditional_breakpoint() end, desc = "Breakpoint Condition" },
-
       { "<F5>", function() require("dap").continue() end, desc = "Continue" },
       { "<S-F5>", function() require("dap").continue({ before = get_args }) end, desc = "Run with Args" },
-
       { "<F10>", function() require("dap").step_over() end, desc = "Step Over" },
       { "<F11>", function() require("dap").step_into() end, desc = "Step Into" },
       { "<S-F11>", function() require("dap").step_out() end, desc = "Step Out" },
-
       { "<F4>", function() require("dap").terminate() end, desc = "Terminate" },
       { "<F6>", function() require("dap").pause() end, desc = "Pause" },
-
       { "<leader>dc", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" },
       { "<leader>dg", function() require("dap").goto_() end, desc = "Go to Line (No Execute)" },
       { "<leader>dj", function() require("dap").down() end, desc = "Down" },
@@ -262,11 +263,6 @@ return {
       local json = require("plenary.json")
       vscode.json_decode = function(str)
         return vim.json.decode(json.json_strip_comments(str))
-      end
-
-      -- Extends dap.configurations with entries read from .vscode/launch.json
-      if vim.fn.filereadable(".vscode/launch.json") then
-        vscode.load_launchjs()
       end
 
       -- add dap hydra

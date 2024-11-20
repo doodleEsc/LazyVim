@@ -156,9 +156,10 @@ return {
         },
 
         experimental = {
-          ghost_text = {
+          -- only show ghost text when we show ai completions
+          ghost_text = vim.g.ai_cmp and {
             hl_group = "CmpGhostText",
-          },
+          } or false,
         },
         -- sorting = defaults.sorting,
         sorting = {
@@ -176,6 +177,31 @@ return {
       }
     end,
     main = "lazyvim.util.cmp",
+  },
+
+  -- snippets
+  {
+    "nvim-cmp",
+    optional = true,
+    dependencies = {
+      {
+        "garymjr/nvim-snippets",
+        opts = {
+          friendly_snippets = true,
+        },
+        dependencies = { "rafamadriz/friendly-snippets" },
+      },
+    },
+    opts = function(_, opts)
+      opts.snippet = {
+        expand = function(item)
+          return LazyVim.cmp.expand(item.body)
+        end,
+      }
+      if LazyVim.has("nvim-snippets") then
+        table.insert(opts.sources, { name = "snippets" })
+      end
+    end,
   },
 
   -- auto pairs
@@ -252,6 +278,7 @@ return {
       library = {
         { path = "luvit-meta/library", words = { "vim%.uv" } },
         { path = "LazyVim", words = { "LazyVim" } },
+        { path = "snacks.nvim", words = { "Snacks" } },
         { path = "lazy.nvim", words = { "LazyVim" } },
         { path = "hydra.nvim", words = { "Hydra" } },
       },
@@ -262,6 +289,7 @@ return {
   -- Add lazydev source to cmp
   {
     "hrsh7th/nvim-cmp",
+    optional = true,
     opts = function(_, opts)
       table.insert(opts.sources, { name = "lazydev", group_index = 0 })
     end,
