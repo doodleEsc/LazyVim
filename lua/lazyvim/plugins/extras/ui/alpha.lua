@@ -31,7 +31,6 @@ return {
         dashboard.button("r", " " .. " Recent files",      LazyVim.pick("oldfiles")),
         dashboard.button("n", " " .. " New file",          [[<cmd> ene <BAR> startinsert <cr>]]),
         dashboard.button("c", " " .. " Config",            LazyVim.pick.config_files()),
-        -- dashboard.button("x", " " .. " Lazy Extras",       "<cmd> LazyExtras <cr>"),
         dashboard.button("u", "󰒲 " .. " Update Plugins",    "<cmd> Lazy sync <cr>"),
         dashboard.button("q", " " .. " Quit",              "<cmd> qa <cr>"),
       }

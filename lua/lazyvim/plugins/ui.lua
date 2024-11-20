@@ -359,28 +359,6 @@ return {
         padding = { left = 1 },
       })
 
-      -- Add components to right sections
-
-      -- -- do not add trouble symbols if aerial is enabled
-      -- -- And allow it to be overriden for some buffer types (see autocmds)
-      -- if vim.g.trouble_lualine and LazyVim.has("trouble.nvim") then
-      --   local trouble = require("trouble")
-      --   local symbols = trouble.statusline({
-      --     mode = "symbols",
-      --     groups = {},
-      --     title = false,
-      --     filter = { range = true },
-      --     format = "{kind_icon}{symbol.name:Normal}",
-      --     hl_group = "lualine_c_normal",
-      --   })
-      --   table.insert(opts.sections.lualine_c, {
-      --     symbols and symbols.get,
-      --     cond = function()
-      --       return vim.b.trouble_lualine ~= false and symbols.has()
-      --     end,
-      --   })
-      -- end
-
       return opts
     end,
   },
@@ -390,15 +368,18 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     event = "VeryLazy",
     opts = function()
-      LazyVim.toggle.map("<leader>ug", {
-        name = "Indention Guides",
-        get = function()
-          return require("ibl.config").get_config(0).enabled
-        end,
-        set = function(state)
-          require("ibl").setup_buffer(0, { enabled = state })
-        end,
-      })
+      Snacks.toggle
+        .new({
+          name = "Indention Guides",
+          mode = "n",
+          get = function()
+            return require("ibl.config").get_config(0).enabled
+          end,
+          set = function(state)
+            require("ibl").setup_buffer(0, { enabled = state })
+          end,
+        })
+        :map("<leader>ug")
 
       return {
         indent = {

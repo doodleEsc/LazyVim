@@ -197,12 +197,14 @@ return {
     "folke/snacks.nvim",
     optional = true,
     opts = function(_, opts)
-      table.insert(opts.dashboard.preset.keys, 3, {
-        action = pick,
-        desc = "Projects",
-        icon = " ",
-        key = "p",
-      })
+      if opts.dashboard.enabled then
+        table.insert(opts.dashboard.preset.keys, 3, {
+          action = pick,
+          desc = "Projects",
+          icon = " ",
+          key = "p",
+        })
+      end
     end,
   },
 }
