@@ -3,7 +3,7 @@ return {
     "karb94/neoscroll.nvim",
     lazy = true,
     opts = {
-      mappings = nil,
+      mappings = {},
       hide_cursor = false, -- Hide cursor while scrolling
       stop_eof = true, -- Stop at <EOF> when scrolling downwards
       respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
