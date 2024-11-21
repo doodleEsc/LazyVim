@@ -1,12 +1,14 @@
 return {
   {
     "ray-x/lsp_signature.nvim",
-    lazy = true,
-    event = "InsertEnter",
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lspconfig",
+    },
     opts = {
       bind = true,
       handler_opts = {
-        border = "shadow",
+        border = "rounded",
       },
     },
     config = function(_, opts)

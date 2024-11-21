@@ -178,6 +178,17 @@ return {
           end, 1) -- Jank defer to give lazy time to init the plugin, just 1 works for me increase as needed
         end,
       })
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "NvimTreeSetup",
+        callback = function()
+          local events = require("nvim-tree.api").events
+          events.subscribe(events.Event.NodeRenamed, function(data)
+            print(vim.inspect(data))
+            Snacks.rename.on_rename_file(data.old_name, data.new_name)
+          end)
+        end,
+      })
     end,
     keys = {
       {
