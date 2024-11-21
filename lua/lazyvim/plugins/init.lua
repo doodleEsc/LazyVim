@@ -30,7 +30,11 @@ return {
     opts = function()
       ---@type snacks.Config
       return {
-        bigfile = { enabled = true },
+        bigfile = {
+          enabled = true,
+          notify = true,
+          size = 1.5 * 1024 * 1024,
+        },
         notifier = { enabled = true },
         quickfile = { enabled = true },
         statuscolumn = { enabled = false }, -- we set this in options.lua
