@@ -40,6 +40,10 @@ function M.is_win()
   return vim.uv.os_uname().sysname:find("Windows") ~= nil
 end
 
+function M.get_os()
+  return vim.uv.os_uname().sysname
+end
+
 ---@param name string
 function M.get_plugin(name)
   return require("lazy.core.config").spec.plugins[name]

@@ -1,7 +1,6 @@
 return {
   {
     "doodleEsc/zhim.nvim",
-    lazy = true,
     event = "VeryLazy",
     keys = {
       {
@@ -12,28 +11,25 @@ return {
         desc = "Toggle IM Change",
       },
     },
-    opts = {
-      enabled = true,
+    opts = function()
+      local ret = {
+        enabled = true,
+        command = "im-select.exe",
+        default_im = { "1033" },
+        zh_im = { "2052" },
+        default_events = { "VimEnter", "FocusGained", "InsertLeave", "CmdlineLeave" },
+        zh_events = { "InsertEnter" },
+        nodes = { "comment", "comment_content", "string", "string_content" },
+        -- ft = { "markdown", "AvanteInput" },
+      }
 
-      -- im-select binary's name, or the binary's full path
-      command = { "im-select.exe" },
+      if LazyVim.get_os() == "Linux" then
+        ret.command = "fcitx5-remote"
+        ret.default_im = { "-s", "keyboard-us" }
+        ret.zh_im = { "-s", "rime" }
+      end
 
-      -- normal mode im
-      default_im = "1033",
-
-      -- insert mode im
-      zh_im = "2052",
-
-      -- Restore the default input method state when the following events are triggered
-      default_events = { "VimEnter", "FocusGained", "InsertLeave", "CmdlineLeave" },
-
-      -- when to change zh im
-      zh_events = { "InsertEnter" },
-
-      -- enabled treesitter nodes
-      nodes = { "comment", "comment_content", "string", "string_content" },
-
-      ft = { "markdown", "AvanteInput" },
-    },
+      return ret
+    end,
   },
 }
