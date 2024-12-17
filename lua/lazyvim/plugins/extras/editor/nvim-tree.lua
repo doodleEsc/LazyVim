@@ -296,12 +296,12 @@ return {
             -- min = vim.diagnostic.severity.HINT,
             max = vim.diagnostic.severity.ERROR,
           },
-          icons = {
-            hint = codicons.get("question"),
-            info = codicons.get("info"),
-            warning = codicons.get("warning"),
-            error = codicons.get("error"),
-          },
+          -- icons = {
+          --   hint = codicons.get("question"),
+          --   info = codicons.get("info"),
+          --   warning = codicons.get("warning"),
+          --   error = codicons.get("error"),
+          -- },
         },
         filters = {
           dotfiles = false,
