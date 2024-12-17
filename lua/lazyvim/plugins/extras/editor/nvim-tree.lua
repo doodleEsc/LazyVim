@@ -163,12 +163,12 @@ return {
       },
     },
     dependencies = {
-      "mortepau/codicons.nvim",
+      -- "mortepau/codicons.nvim",
       "romgrk/barbar.nvim",
       "nvim-tree/nvim-web-devicons",
     },
     config = function(_, opts)
-      local codicons = require("codicons")
+      -- local codicons = require("codicons")
       require("nvim-tree").setup({
         -- BEGIN_DEFAULT_OPTS
         sync_root_with_cwd = true,
@@ -239,7 +239,7 @@ return {
             git_placement = "signcolumn",
             modified_placement = "after",
             padding = " ",
-            symlink_arrow = codicons.get("arrow-small-right"),
+            -- symlink_arrow = codicons.get("arrow-small-right"),
             show = {
               file = true,
               folder = true,
@@ -247,31 +247,31 @@ return {
               git = true,
               modified = true,
             },
-            glyphs = {
-              default = codicons.get("file"),
-              symlink = codicons.get("file-symlink-file"),
-              bookmark = codicons.get("bookmark"),
-              modified = "●",
-              folder = {
-                arrow_closed = "",
-                arrow_open = "",
-                default = codicons.get("folder"),
-                open = codicons.get("folder-opened"),
-                empty = codicons.get("folder"),
-                empty_open = codicons.get("folder-opened"),
-                symlink = codicons.get("file-symlink-directory"),
-                symlink_open = codicons.get("folder-opened"),
-              },
-              git = {
-                unstaged = codicons.get("diff"),
-                staged = codicons.get("diff-added"),
-                unmerged = codicons.get("diff-modified"),
-                renamed = codicons.get("diff-renamed"),
-                untracked = codicons.get("zoom-in"),
-                deleted = codicons.get("diff-removed"),
-                ignored = codicons.get("diff-ignored"),
-              },
-            },
+            -- glyphs = {
+            --   default = codicons.get("file"),
+            --   symlink = codicons.get("file-symlink-file"),
+            --   bookmark = codicons.get("bookmark"),
+            --   modified = "●",
+            --   folder = {
+            --     arrow_closed = "",
+            --     arrow_open = "",
+            --     default = codicons.get("folder"),
+            --     open = codicons.get("folder-opened"),
+            --     empty = codicons.get("folder"),
+            --     empty_open = codicons.get("folder-opened"),
+            --     symlink = codicons.get("file-symlink-directory"),
+            --     symlink_open = codicons.get("folder-opened"),
+            --   },
+            --   git = {
+            --     unstaged = codicons.get("diff"),
+            --     staged = codicons.get("diff-added"),
+            --     unmerged = codicons.get("diff-modified"),
+            --     renamed = codicons.get("diff-renamed"),
+            --     untracked = codicons.get("zoom-in"),
+            --     deleted = codicons.get("diff-removed"),
+            --     ignored = codicons.get("diff-ignored"),
+            --   },
+            -- },
           },
         },
         hijack_directories = {
