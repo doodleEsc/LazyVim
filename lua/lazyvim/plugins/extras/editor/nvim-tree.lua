@@ -129,7 +129,6 @@ return {
         callback = function()
           local events = require("nvim-tree.api").events
           events.subscribe(events.Event.NodeRenamed, function(data)
-            print(vim.inspect(data))
             Snacks.rename.on_rename_file(data.old_name, data.new_name)
           end)
         end,
