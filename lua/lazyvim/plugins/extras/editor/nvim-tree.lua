@@ -164,7 +164,6 @@ return {
     },
     dependencies = {
       -- "mortepau/codicons.nvim",
-      "romgrk/barbar.nvim",
       "nvim-tree/nvim-web-devicons",
     },
     config = function(_, opts)
@@ -401,6 +400,18 @@ return {
             watcher = false,
           },
         },
+      })
+    end,
+  },
+
+  {
+    "akinsho/bufferline.nvim",
+    opts = function(_, opts)
+      table.insert(opts.options.offsets, {
+        filetype = "NvimTree",
+        text = "File Explorer",
+        highlight = "Directory",
+        separator = true, -- use a "true" to enable the default, or set your own character
       })
     end,
   },
