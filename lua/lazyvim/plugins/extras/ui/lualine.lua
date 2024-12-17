@@ -3,9 +3,6 @@ return {
     "nvim-lualine/lualine.nvim",
     optional = true,
     opts = function(_, opts)
-      opts.options = nil
-      opts.sections = nil
-
       local colors = {
         bg = "#202328",
         fg = "#bbc2cf",
@@ -177,7 +174,7 @@ return {
       ins_left({
         function() return "  " .. require("dap").status() end,
         cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-        color = function() return LazyVim.ui.fg("Debug") end,
+        color = function() return { fg = Snacks.util.color("Debug") } end,
         separator = "┃",
       })
 
@@ -240,6 +237,8 @@ return {
         color = { fg = colors.blue },
         padding = { left = 1 },
       })
+
+      return opts
     end,
   },
 }
