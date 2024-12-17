@@ -1,9 +1,11 @@
 return {
   {
-
     "nvim-lualine/lualine.nvim",
     optional = true,
     opts = function(_, opts)
+      opts.options = nil
+      opts.sections = nil
+
       local colors = {
         bg = "#202328",
         fg = "#bbc2cf",
@@ -46,8 +48,6 @@ return {
       -- PERF: we don't need this lualine require madness 🤷
       local lualine_require = require("lualine_require")
       lualine_require.require = require
-
-      local icons = LazyVim.config.icons
 
       vim.o.laststatus = vim.g.lualine_laststatus
 
