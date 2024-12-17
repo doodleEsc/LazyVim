@@ -61,15 +61,18 @@ return {
         once = true,
         pattern = "LazyVimStarted",
         callback = function()
+          local datetime = os.date(" %Y-%m-%d") .. "  -  "
+          local author = "󰊠 " .. os.getenv("USER") .. "  -  "
+          local version = vim.version()
+          local nvim_version_info = " v" .. version.major .. "." .. version.minor .. "." .. version.patch .. "  -  "
+
           local stats = require("lazy").stats()
           local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          dashboard.section.footer.val = "⚡ Neovim loaded "
-            .. stats.loaded
-            .. "/"
-            .. stats.count
-            .. " plugins in "
-            .. ms
-            .. "ms"
+          local plugin_info = "󰚥 " .. stats.loaded .. "/" .. stats.count .. " plugins" .. "  -  "
+          local load_cost = "󱎫 " .. ms .. "ms"
+
+          local footer = author .. datetime .. nvim_version_info .. plugin_info .. load_cost
+          dashboard.section.footer.val = footer
           pcall(vim.cmd.AlphaRedraw)
         end,
       })
