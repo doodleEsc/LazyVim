@@ -1,4 +1,15 @@
 return {
+
+  {
+    "folke/which-key.nvim",
+    optional = true,
+    opts = {
+      spec = {
+        { "<leader>a", group = "AI" },
+      },
+    },
+  },
+
   {
     "yetone/avante.nvim",
     event = "VeryLazy",
