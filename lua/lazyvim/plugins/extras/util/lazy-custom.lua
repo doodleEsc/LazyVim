@@ -10,7 +10,6 @@ return {
   },
   {
     "doodleEsc/Lazy-custom",
-    dev = true,
     event = "VeryLazy",
     keys = {
       {
