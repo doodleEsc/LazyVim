@@ -1,4 +1,15 @@
 return {
+
+  {
+    "folke/which-key.nvim",
+    optional = true,
+    opts = {
+      spec = {
+        { "<leader>z", group = "Input Method" },
+      },
+    },
+  },
+
   {
     "doodleEsc/zhim.nvim",
     event = "VeryLazy",
