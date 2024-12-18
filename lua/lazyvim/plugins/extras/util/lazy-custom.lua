@@ -1,5 +1,14 @@
 return {
   {
+
+    "nvim-treesitter/nvim-treesitter",
+    opts = function(_, opts)
+      opts.incremental_selection = {
+        enabled = false,
+      }
+    end,
+  },
+  {
     "doodleEsc/Lazy-custom",
     dev = true,
     event = "VeryLazy",
@@ -7,34 +16,18 @@ return {
       {
         "<C-Space>",
         function()
-          Snacks.terminal()
-        end,
-        mode = "n",
-        desc = "Terminal (cwd)",
-      },
-      {
-        "<leader>ft",
-        function()
           Snacks.terminal(nil, { cwd = LazyVim.root() })
         end,
         mode = "n",
         desc = "Terminal (Root Dir)",
       },
       {
-        "<c-/>",
-        function()
-          Snacks.terminal(nil, { cwd = LazyVim.root() })
-        end,
-        mode = "n",
-        desc = "Terminal (Root Dir)",
-      },
-      {
-        "<c-_>",
-        function()
-          Snacks.terminal(nil, { cwd = LazyVim.root() })
-        end,
-        mode = "n",
-        desc = "which_key_ignore",
+        "<C-Space>",
+        "<cmd>close<cr>",
+        mode = "t",
+        silent = true,
+        noremap = true,
+        desc = "Hide Terminal",
       },
     },
     opts = {
