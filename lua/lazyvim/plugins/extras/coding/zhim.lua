@@ -31,7 +31,7 @@ return {
         default_events = { "VimEnter", "FocusGained", "InsertLeave", "CmdlineLeave" },
         zh_events = { "InsertEnter" },
         nodes = { "comment", "comment_content", "string", "string_content" },
-        -- ft = { "markdown", "AvanteInput" },
+        ft = { "markdown", "AvanteInput" },
       }
 
       local os = vim.uv.os_uname().sysname

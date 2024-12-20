@@ -68,4 +68,13 @@ return {
       },
     },
   },
+
+  {
+    "saghen/blink.cmp",
+    opts = {
+      enabled = function()
+        return true
+      end,
+    },
+  },
 }
