@@ -22,9 +22,6 @@ local function load_env_file(path)
         key = key:match("^%s*(.-)%s*$")
         value = value:match("^%s*(.-)%s*$")
 
-        -- set env vars
-        print(key)
-        print(value)
         vim.env[key] = value
       end
     end
