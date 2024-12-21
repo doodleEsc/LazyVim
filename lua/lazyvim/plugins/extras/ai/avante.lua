@@ -21,8 +21,8 @@ return {
   },
 
   {
-    "yetone/avante.nvim",
-    dev = true,
+    "doodleEsc/avante.nvim",
+    dev = false,
     event = "VeryLazy",
     lazy = true,
     init = function()
