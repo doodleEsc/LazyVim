@@ -5,27 +5,12 @@ local function dashboardStartup()
   stats = stats and stats.startuptime > 0 and stats or require("lazy.stats").stats()
   local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
 
-  -- return {
-  --   align = "center",
-  --   padding = { 0, 1 },
-  --   text = {
-  --     { stats.loaded .. "/" .. stats.count, hl = "special" },
-  --     { " plugins loaded in ", hl = "footer" },
-  --     { ms .. "ms", hl = "special" },
-  --   },
-  -- }
-
   local datetime = os.date(" %Y-%m-%d") .. "  -  "
-  -- local author = "󰊠 " .. os.getenv("USER") .. "  -  "
   local version = vim.version()
   local nvim_version_info = " v" .. version.major .. "." .. version.minor .. "." .. version.patch .. "  -  "
-
-  -- local stats = require("lazy").stats()
-  -- local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
   local plugin_info = "󰚥 " .. stats.loaded .. "/" .. stats.count .. " plugins" .. "  -  "
   local load_cost = "󱎫 " .. ms .. "ms"
 
-  -- local footer = author .. datetime .. nvim_version_info .. plugin_info .. load_cost
   local footer = datetime .. nvim_version_info .. plugin_info .. load_cost
 
   return {
@@ -115,6 +100,11 @@ return {
 
     opts = function(_, opts)
       local snacksConfig = {
+
+        input = {
+          enabled = true,
+        },
+
         -- Animation
         ---@type snacks.animate.Config
         animate = {
@@ -135,12 +125,12 @@ return {
       ]],
           },
           sections = {
-            { section = "header", padding = 0 },
-            { title = "Shortcuts", padding = 1, align = "center" },
+            { section = "header", padding = 1 },
+            -- { title = "Shortcuts", padding = 0, align = "center" },
             { section = "keys", padding = { 1, 0 }, gap = 1 },
             -- { title = "Recent Files", padding = 1, align = "center" },
             -- { section = "recent_files", padding = 1 },
-            { title = "Recent Projects", padding = 1, align = "center" },
+            -- { title = "Recent Projects", padding = 1, align = "center" },
             { section = "projects", padding = 1, limit = 10, session = true },
             dashboardStartup,
           },
