@@ -6,6 +6,27 @@ return {
     opts = {
       sources = {
         compat = { "avante_commands", "avante_mentions" },
+
+        providers = {
+          avante_commands = {
+            name = "avante_commands",
+            module = "blink.compat.source",
+            score_offset = 11, -- show at a higher priority than lsp
+            -- opts = {},
+          },
+          -- avante_files = {
+          --   name = "avante_commands",
+          --   module = "blink.compat.source",
+          --   score_offset = 100, -- show at a higher priority than lsp
+          --   -- opts = {},
+          -- },
+          avante_mentions = {
+            name = "avante_mentions",
+            module = "blink.compat.source",
+            score_offset = 10, -- show at a higher priority than lsp
+            -- opts = {},
+          },
+        },
       },
     },
   },
