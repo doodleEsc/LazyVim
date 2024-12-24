@@ -444,7 +444,7 @@ return {
     opts = function(_, opts)
       table.insert(opts.dashboard.preset.keys, 1, {
         action = ":ene | lua require('nvim-tree.api').tree.open()",
-        desc = "Current Directory",
+        desc = "Directory Tree",
         icon = "󱏒 ",
         key = "o",
       })
