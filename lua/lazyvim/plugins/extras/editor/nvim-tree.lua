@@ -139,7 +139,7 @@ return {
         "<leader>tt",
         function()
           local api = require("nvim-tree.api")
-          api.tree.toggle()
+          api.tree.toggle({ path = LazyVim.root() })
         end,
         desc = "Toggle File Explorer",
       },
@@ -147,16 +147,11 @@ return {
       {
         "<leader>tr",
         function()
-          if vim.bo.filetype == "alpha" then
+          if vim.bo.filetype == "snacks_dashboard" then
             return
           end
           local api = require("nvim-tree.api")
-          if api.tree.is_visible() then
-            api.tree.find_file(vim.fn.expand("%:p"))
-          else
-            api.tree.toggle(true, false)
-          end
-          api.tree.focus()
+          api.tree.toggle({ path = LazyVim.root(), focus = true })
         end,
         desc = "Toggle File Explorer",
       },
@@ -169,8 +164,8 @@ return {
       -- local codicons = require("codicons")
       require("nvim-tree").setup({
         -- BEGIN_DEFAULT_OPTS
-        sync_root_with_cwd = true,
-        respect_buf_cwd = true,
+        sync_root_with_cwd = false,
+        respect_buf_cwd = false,
         auto_reload_on_write = true,
         disable_netrw = true,
         hijack_cursor = true,
@@ -278,8 +273,11 @@ return {
         },
         update_focused_file = {
           enable = true,
-          update_cwd = true,
-          ignore_list = {},
+          update_root = {
+            enable = true,
+            ignore_list = {},
+          },
+          exclude = false,
         },
         system_open = {
           cmd = "",
@@ -443,7 +441,7 @@ return {
     optional = true,
     opts = function(_, opts)
       table.insert(opts.dashboard.preset.keys, 1, {
-        action = ":ene | lua require('nvim-tree.api').tree.open()",
+        action = ":ene | lua require('nvim-tree.api').tree.open({path = LazyVim.root()})",
         desc = "Directory Tree",
         icon = "󱏒 ",
         key = "o",
