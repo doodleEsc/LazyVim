@@ -5,21 +5,24 @@ local function dashboardStartup()
   stats = stats and stats.startuptime > 0 and stats or require("lazy.stats").stats()
   local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
 
-  local datetime = os.date(" %Y-%m-%d") .. "  -  "
+  local delimiter = "  -  "
+  local datetime = os.date(" %Y-%m-%d")
   local version = vim.version()
-  local nvim_version_info = " v" .. version.major .. "." .. version.minor .. "." .. version.patch .. "  -  "
-  local plugin_info = "󰚥 " .. stats.loaded .. "/" .. stats.count .. " plugins" .. "  -  "
+  local nvim_version_info = " v" .. version.major .. "." .. version.minor .. "." .. version.patch
+  local plugin_info = "󰚥 " .. stats.loaded .. "/" .. stats.count .. " plugins"
   local load_cost = "󱎫 " .. ms .. "ms"
-
-  local footer = datetime .. nvim_version_info .. plugin_info .. load_cost
 
   return {
     align = "center",
     padding = { 0, 1 },
     text = {
-      -- { stats.loaded .. "/" .. stats.count, hl = "special" },
-      { footer, hl = "footer" },
-      -- { ms .. "ms", hl = "special" },
+      { datetime },
+      { delimiter },
+      { nvim_version_info },
+      { delimiter },
+      { plugin_info, hl = "special" },
+      { delimiter },
+      { load_cost },
     },
   }
 end
