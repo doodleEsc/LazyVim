@@ -78,12 +78,13 @@ return {
       },
     },
     opts = {
+      clipboard = "unnamedplus",
       opts = {
         jumpoptions = "stack",
       },
       globals = {
         clipboard = {
-          name = "uniClipboard",
+          name = "myClipboard",
           copy = {
             ["+"] = "clipboard-provider copy",
             ["*"] = "clipboard-provider copy",
@@ -92,7 +93,7 @@ return {
             ["+"] = "clipboard-provider paste",
             ["*"] = "clipboard-provider paste",
           },
-          cache_enabled = 1,
+          cache_enabled = 0,
         },
       },
     },
