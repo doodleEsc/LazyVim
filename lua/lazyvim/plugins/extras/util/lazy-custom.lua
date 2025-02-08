@@ -143,4 +143,27 @@ return {
       LazyVim.merge(opts, snacksConfig)
     end,
   },
+
+  {
+    "akinsho/bufferline.nvim",
+    optional = true,
+    opts = function(_, opts)
+      local filtered_filetypes = {
+        "codecompanion",
+        "neo-tree",
+        "help",
+        "qf",
+        "notify",
+      }
+      opts.options.custom_filter = function(buf_number, buf_numbers)
+        local ft = vim.bo[buf_number].filetype
+        for _, filtered_ft in ipairs(filtered_filetypes) do
+          if ft == filtered_ft then
+            return false
+          end
+        end
+        return true
+      end
+    end,
+  },
 }
