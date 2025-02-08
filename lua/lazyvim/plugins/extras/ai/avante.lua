@@ -53,6 +53,7 @@ return {
     build = "make",
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
+      local model = LazyVim.env.get("OPENAI_MODEL")
 
       return {
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
@@ -73,7 +74,7 @@ You are an excellent programming expert. All responses are in Simplified Chinese
 ]],
         openai = {
           endpoint = endpoint,
-          model = "gpt-4o-mini",
+          model = model,
           max_tokens = 4096,
           timeout = 30000, -- Timeout in milliseconds
           temperature = 0,
