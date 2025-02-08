@@ -17,6 +17,12 @@ return {
           chat = {
             adapter = "openai",
           },
+          inline = {
+            adapter = "openai",
+          },
+          cmd = {
+            adapter = "openai",
+          },
         },
         adapters = {
           openai = function()
