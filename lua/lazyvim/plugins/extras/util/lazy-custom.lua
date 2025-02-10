@@ -166,7 +166,8 @@ return {
         end
         return true
       end
-      opts.options.always_show_bufferline = true
+      opts.options.always_show_bufferline = false
+      opts.options.diagnostics = false
       opts.options.hover = {
         enabled = true,
         delay = 200,
@@ -179,36 +180,17 @@ return {
       opts.options.tab_size = 14
 
       opts.highlights = {
-        -- 选中 buffer 的下划线样式
         buffer_selected = {
-          fg = "#000000", -- 前景色，黑色
-          bg = "#fabd2f", -- 背景色，黄色
+          fg = "#000000",
+          bg = "#fabd2f",
         },
-        -- 选中 buffer 的标签文本样式
-        buffer_selected_label = {
-          fg = "#000000", -- 前景色，黑色
-          bg = "#fabd2f", -- 背景色，黄色
-        },
-        -- 选中 buffer 的图标样式
-        close_button_visible = {
-          fg = "#000000", -- 前景色，黑色
-          bg = "#fabd2f", -- 背景色，黄色
-        },
-        -- 选中 buffer 的 close 图标样式
         close_button_selected = {
-          fg = "#000000", -- 前景色，黑色
-          bg = "#fabd2f", -- 背景色，黄色
+          fg = "#000000",
+          bg = "#fabd2f",
         },
-        -- -- 分隔符样式
-        -- separator = {
-        --   bg = "#fabd2f", -- 背景色，黄色
-        -- },
         separator_selected = {
-          bg = "#fabd2f", -- 背景色，黄色
+          bg = "#fabd2f",
         },
-        -- separator_visible = {
-        --   bg = "#fabd2f", -- 背景色，黄色
-        -- },
       }
     end,
   },
