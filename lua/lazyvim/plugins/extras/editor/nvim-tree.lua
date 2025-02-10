@@ -407,15 +407,6 @@ return {
     init = function()
       vim.o.hidden = false
     end,
-    keys = function(_, keys)
-      table.insert(keys, {
-        "<S-n>",
-        function()
-          Snacks.bufdelete()
-        end,
-        desc = "Close Current Buffer",
-      })
-    end,
     opts = function(_, opts)
       table.insert(opts.options.offsets, {
         filetype = "NvimTree",
