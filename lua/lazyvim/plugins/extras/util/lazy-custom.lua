@@ -153,7 +153,7 @@ return {
             -- { title = "Recent Files", padding = 1, align = "center" },
             -- { section = "recent_files", padding = 1 },
             -- { title = "Recent Projects", padding = 1, align = "center" },
-            { section = "projects", padding = 1, limit = 10, session = true },
+            { section = "projects", padding = 1, limit = 5, session = true },
             dashboardStartup,
           },
         },
