@@ -1,4 +1,15 @@
 return {
+
+  {
+    "folke/which-key.nvim",
+    optional = true,
+    opts = {
+      spec = {
+        { "<leader>a", group = "AI" },
+      },
+    },
+  },
+
   {
     "olimorris/codecompanion.nvim",
     event = "VeryLazy",
@@ -6,7 +17,17 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
-
+    init = function()
+      LazyVim.env.load()
+    end,
+    keys = {
+      {
+        "<leader>ai",
+        "<cmd>CodeCompanionChat<cr>",
+        mode = "n",
+        desc = "LLM Chat",
+      },
+    },
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
       local api_key = LazyVim.env.get("OPENAI_API_KEY")
@@ -36,6 +57,9 @@ return {
                 model = {
                   default = model,
                 },
+                temperature = {
+                  default = 0.1,
+                },
               },
             })
           end,
@@ -48,12 +72,4 @@ return {
       }
     end,
   },
-
-  -- {
-  --   "MeanderingProgrammer/render-markdown.nvim",
-  --   optional = true,
-  --   ft = function(_, ft)
-  --     vim.list_extend(ft, { "codecompanion" })
-  --   end,
-  -- },
 }
