@@ -30,7 +30,7 @@ return {
               env = {
                 url = endpoint,
                 api_key = api_key,
-                chat_url = "/chat/completions",
+                chat_url = "/v1/chat/completions",
               },
               schema = {
                 model = {

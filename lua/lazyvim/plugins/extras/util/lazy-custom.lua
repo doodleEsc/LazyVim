@@ -80,6 +80,7 @@ return {
     opts = {
       clipboard = "unnamedplus",
       opts = {
+        mousemoveevent = true,
         jumpoptions = "stack",
       },
       globals = {
@@ -155,6 +156,7 @@ return {
         "qf",
         "notify",
       }
+
       opts.options.custom_filter = function(buf_number, buf_numbers)
         local ft = vim.bo[buf_number].filetype
         for _, filtered_ft in ipairs(filtered_filetypes) do
@@ -164,6 +166,50 @@ return {
         end
         return true
       end
+      opts.options.always_show_bufferline = true
+      opts.options.hover = {
+        enabled = true,
+        delay = 200,
+        reveal = { "close" },
+      }
+
+      opts.options.separator_style = "slant"
+      opts.options.color_icons = false
+      opts.options.show_buffer_icons = false
+      opts.options.tab_size = 14
+
+      opts.highlights = {
+        -- 选中 buffer 的下划线样式
+        buffer_selected = {
+          fg = "#000000", -- 前景色，黑色
+          bg = "#fabd2f", -- 背景色，黄色
+        },
+        -- 选中 buffer 的标签文本样式
+        buffer_selected_label = {
+          fg = "#000000", -- 前景色，黑色
+          bg = "#fabd2f", -- 背景色，黄色
+        },
+        -- 选中 buffer 的图标样式
+        close_button_visible = {
+          fg = "#000000", -- 前景色，黑色
+          bg = "#fabd2f", -- 背景色，黄色
+        },
+        -- 选中 buffer 的 close 图标样式
+        close_button_selected = {
+          fg = "#000000", -- 前景色，黑色
+          bg = "#fabd2f", -- 背景色，黄色
+        },
+        -- -- 分隔符样式
+        -- separator = {
+        --   bg = "#fabd2f", -- 背景色，黄色
+        -- },
+        separator_selected = {
+          bg = "#fabd2f", -- 背景色，黄色
+        },
+        -- separator_visible = {
+        --   bg = "#fabd2f", -- 背景色，黄色
+        -- },
+      }
     end,
   },
 }
