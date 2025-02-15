@@ -20,9 +20,9 @@ local function dashboardStartup()
       { delimiter },
       { nvim_version_info },
       { delimiter },
-      { plugin_info, hl = "special" },
+      { plugin_info },
       { delimiter },
-      { load_cost },
+      { load_cost, hl = "special" },
     },
   }
 end
