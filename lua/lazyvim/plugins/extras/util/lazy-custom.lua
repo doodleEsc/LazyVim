@@ -235,6 +235,10 @@ return {
         separator_selected = {
           bg = "#fabd2f",
         },
+        duplicate_selected = {
+          fg = "#000000",
+          bg = "#fabd2f",
+        },
       }
     end,
   },
