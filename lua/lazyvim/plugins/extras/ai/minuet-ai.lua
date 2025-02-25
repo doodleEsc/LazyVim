@@ -14,7 +14,7 @@ return {
       local fim_model = LazyVim.env.get("QWEN_MODEL")
 
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
-      local model = LazyVim.env.get("OPENAI_MODEL")
+      local model = LazyVim.env.get("OPENAI_CMP_MODEL")
 
       return {
         -- enable or disable auto-completion. note that you still need to add
@@ -54,8 +54,8 @@ return {
 
           show_on_completion_menu = true,
         },
-        -- provider = "openai_fim_compatible",
-        provider = "openai_compatible",
+        provider = "openai_fim_compatible",
+        -- provider = "openai_compatible",
         provider_options = {
           openai_fim_compatible = {
             end_point = fim_endpoint .. "/completions",
@@ -117,7 +117,7 @@ return {
         -- "verbose": display most notifications
         -- "warn": display warnings and errors only
         -- "error": display errors only
-        notify = "warn",
+        notify = "debug",
         -- the request timeout, measured in seconds. when streaming is enabled
         -- (stream = true), setting a shorter request_timeout allows for faster
         -- retrieval of completion items, albeit potentially incomplete.
@@ -174,6 +174,7 @@ return {
     "saghen/blink.cmp",
     optional = true,
     opts = {
+      completion = { trigger = { prefetch_on_insert = false } },
       keymap = {
         ["<A-y>"] = {
           function(cmp)
