@@ -47,7 +47,6 @@ return {
       "nvimtools/hydra.nvim",
     },
     config = function(_, opts)
-      print("asdfasfasdfasf")
       LazyVim.hydra.add("venn", venn_hydra_factory)
     end,
   },
