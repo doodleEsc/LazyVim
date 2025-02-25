@@ -10,8 +10,11 @@ return {
       LazyVim.env.load()
     end,
     opts = function()
-      local endpoint = LazyVim.env.get("QWEN_URL")
-      local model = LazyVim.env.get("QWEN_MODEL")
+      local fim_endpoint = LazyVim.env.get("QWEN_BASE_URL")
+      local fim_model = LazyVim.env.get("QWEN_MODEL")
+
+      local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
+      local model = LazyVim.env.get("OPENAI_MODEL")
 
       return {
         -- enable or disable auto-completion. note that you still need to add
@@ -35,44 +38,30 @@ return {
           -- disabled. this option is useful when auto-completion is enabled for
           -- all file types i.e., when auto_trigger_ft = { '*' }
           auto_trigger_ignore_ft = {},
-          -- keymap = {
-          --   accept = nil,
-          --   accept_line = nil,
-          --   accept_n_lines = nil,
-          --   -- cycle to next completion item, or manually invoke completion
-          --   next = nil,
-          --   -- cycle to prev completion item, or manually invoke completion
-          --   prev = nil,
-          --   dismiss = nil,
-          -- },
-
           keymap = {
-            -- accept whole completion
-            accept = "<A-A>",
-            -- accept one line
-            accept_line = "<A-a>",
-            -- accept n lines (prompts for number)
-            -- e.g. "A-z 2 CR" will accept 2 lines
-            accept_n_lines = "<A-z>",
-            -- Cycle to prev completion item, or manually invoke completion
-            prev = "<A-[>",
-            -- Cycle to next completion item, or manually invoke completion
-            next = "<A-]>",
-            dismiss = "<A-e>",
+            accept = nil,
+            accept_line = nil,
+            accept_n_lines = nil,
+            -- cycle to next completion item, or manually invoke completion
+            next = nil,
+            -- cycle to prev completion item, or manually invoke completion
+            prev = nil,
+            dismiss = nil,
           },
 
           -- whether show virtual text suggestion when the completion menu
           -- (nvim-cmp or blink-cmp) is visible.
 
-          show_on_completion_menu = false,
+          show_on_completion_menu = true,
         },
-        provider = "openai_fim_compatible",
+        -- provider = "openai_fim_compatible",
+        provider = "openai_compatible",
         provider_options = {
           openai_fim_compatible = {
-            end_point = endpoint,
+            end_point = fim_endpoint .. "/completions",
             api_key = "QWEN_API_KEY",
             name = "Qwen",
-            model = model,
+            model = fim_model,
             stream = false,
             template = {
               prompt = function(context_before_cursor, context_after_cursor)
@@ -86,9 +75,25 @@ return {
             },
             optional = {
               stop = { "\n\n" },
-              max_tokens = 256,
+              max_tokens = 512,
             },
           },
+
+          openai_compatible = {
+            end_point = endpoint .. "/chat/completions",
+            model = model,
+            api_key = "OPENAI_API_KEY",
+            name = "OpenAI",
+            -- system = "see [Prompt] section for the default value",
+            -- few_shots = "see [Prompt] section for the default value",
+            -- chat_input = "See [Prompt Section for default value]",
+            stream = true,
+            optional = {
+              stop = nil,
+              max_tokens = nil,
+            },
+          },
+
           -- see the documentation in each provider in the following part.
         },
         -- the maximum total characters of the context before and after the cursor
@@ -110,7 +115,7 @@ return {
         -- "verbose": display most notifications
         -- "warn": display warnings and errors only
         -- "error": display errors only
-        notify = "debug",
+        notify = "warn",
         -- the request timeout, measured in seconds. when streaming is enabled
         -- (stream = true), setting a shorter request_timeout allows for faster
         -- retrieval of completion items, albeit potentially incomplete.
@@ -163,30 +168,6 @@ return {
     end,
   },
 
-  -- {
-  --   "saghen/blink.cmp",
-  --   optional = true,
-  --   opts = function(_, opts)
-  --     if opts.sources.providers == nil then
-  --       opts.sources.providers = {}
-  --     end
-  --
-  --     opts.sources.providers.minuet = {
-  --       name = "minuet",
-  --       module = "minuet.blink",
-  --       score_offset = 8, -- Gives minuet higher priority among suggestions
-  --     }
-  --
-  --     table.insert(opts.sources.default, "minuet")
-  --
-  --     opts.completion.trigger = { prefetch_on_insert = true }
-  --
-  --     opts.keymap["<A-y>"] = require("minuet").make_blink_map()
-  --
-  --     return opts
-  --   end,
-  -- },
-
   {
     "saghen/blink.cmp",
     optional = true,
@@ -210,5 +191,31 @@ return {
         },
       },
     },
+  },
+
+  {
+    "nvim-cmp",
+    optional = true,
+    opts = function(_, opts)
+      -- if you wish to use autocomplete
+      table.insert(opts.sources, 1, {
+        name = "minuet",
+        group_index = 1,
+        priority = 100,
+      })
+
+      opts.performance = {
+        -- It is recommended to increase the timeout duration due to
+        -- the typically slower response speed of LLMs compared to
+        -- other completion sources. This is not needed when you only
+        -- need manual completion.
+        fetching_timeout = 2000,
+      }
+
+      opts.mapping = vim.tbl_deep_extend("force", opts.mapping or {}, {
+        -- if you wish to use manual complete
+        ["<A-y>"] = require("minuet").make_cmp_map(),
+      })
+    end,
   },
 }
