@@ -56,9 +56,10 @@ return {
       },
     },
   },
+
   {
-    "doodleEsc/Lazy-custom",
-    event = "VeryLazy",
+    "snacks.nvim",
+    optional = true,
     keys = {
       {
         "<C-Space>",
@@ -76,49 +77,7 @@ return {
         noremap = true,
         desc = "Hide Terminal",
       },
-
-      -- delete
-      { "<C-d>", "<C-o>diw", mode = "i", desc = "Delete inner word" },
-      { "<C-u>", "<C-o>dI", mode = "i", desc = "Delete to beginning of line" },
-      { "<C-k>", "<C-o>D", mode = "i", desc = "Delete to end of line" },
-
-      -- move
-      { "<C-b>", "<Left>", mode = "i", desc = "Move cursor left" },
-      { "<C-f>", "<Right>", mode = "i", desc = "Move cursor right" },
-      { "<C-a>", "<Esc>^i", mode = "i", desc = "Move to beginning of line and insert" },
-      { "<C-n>", "<Down>", mode = "i", desc = "Move cursor down" },
-      { "<C-p>", "<Up>", mode = "i", desc = "Move cursor up" },
-
-      -- edit
-      { "<C-s>", "<ESC>:w<CR>", mode = "i", desc = "Save file" },
-      { "<C-j>", "<C-o>o", mode = "i", desc = "Insert new line below" },
-      { "<C-l>", "<C-o>O", mode = "i", desc = "Insert new line above" },
     },
-    opts = {
-      clipboard = "unnamedplus",
-      opts = {
-        mousemoveevent = true,
-        jumpoptions = "stack",
-      },
-      globals = {
-        clipboard = {
-          name = "myClipboard",
-          copy = {
-            ["+"] = "clipboard-provider copy",
-            ["*"] = "clipboard-provider copy",
-          },
-          paste = {
-            ["+"] = "clipboard-provider paste",
-            ["*"] = "clipboard-provider paste",
-          },
-          cache_enabled = 0,
-        },
-      },
-    },
-  },
-
-  {
-    "snacks.nvim",
 
     opts = function(_, opts)
       local snacksConfig = {
@@ -236,6 +195,10 @@ return {
           bg = "#fabd2f",
         },
         duplicate_selected = {
+          fg = "#000000",
+          bg = "#fabd2f",
+        },
+        modified_selected = {
           fg = "#000000",
           bg = "#fabd2f",
         },

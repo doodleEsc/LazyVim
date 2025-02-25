@@ -74,6 +74,7 @@ return {
               suffix = false,
             },
             optional = {
+              temperature = 0.8,
               stop = { "\n\n" },
               max_tokens = 512,
             },
@@ -87,10 +88,11 @@ return {
             -- system = "see [Prompt] section for the default value",
             -- few_shots = "see [Prompt] section for the default value",
             -- chat_input = "See [Prompt Section for default value]",
-            stream = true,
+            stream = false,
             optional = {
+              temperature = 0.8,
               stop = nil,
-              max_tokens = nil,
+              max_tokens = 512,
             },
           },
 
