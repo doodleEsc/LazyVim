@@ -27,7 +27,7 @@ return {
           enable_auto_complete = false,
         },
         blink = {
-          enable_auto_complete = true,
+          enable_auto_complete = false,
         },
         virtualtext = {
           -- specify the filetypes to enable automatic virtual text completion,
@@ -107,9 +107,9 @@ return {
         -- context before cursor will be used. this option should be between 0 and
         -- 1, context_ratio = 0.75 means the ratio will be 3:1.
         context_ratio = 0.75,
-        throttle = 1000, -- only send the request every x milliseconds, use 0 to disable throttle.
+        throttle = 3000, -- only send the request every x milliseconds, use 0 to disable throttle.
         -- debounce the request in x milliseconds, set to 0 to disable debounce
-        debounce = 1000,
+        debounce = 2000,
         -- control notification display for request status
         -- notification options:
         -- false: disable all notifications (use boolean false, not string "false")
