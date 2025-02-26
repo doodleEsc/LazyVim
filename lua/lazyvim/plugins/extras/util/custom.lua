@@ -1,3 +1,5 @@
+local completion = require("blink.cmp.completion")
+local trigger = require("blink.cmp.completion.trigger")
 --- Add the startup section
 ---@return snacks.dashboard.Section
 local function dashboardStartup()
@@ -153,6 +155,9 @@ return {
     end,
     opts = function(_, opts)
       local filtered_filetypes = {
+        "Avante",
+        "AvanteInput",
+        "AvanteSelectedFiles",
         "codecompanion",
         "neo-tree",
         "help",
@@ -204,5 +209,49 @@ return {
         },
       }
     end,
+  },
+
+  {
+    "saghen/blink.cmp",
+    opts = {
+      completion = {
+        trigger = {
+          show_in_snippet = false,
+        },
+      },
+      keymap = {
+        -- set to 'none' to disable the 'default' preset
+        preset = "none",
+
+        ["<C-e>"] = { "hide", "fallback" },
+
+        ["<Tab>"] = {
+          function(cmp)
+            if cmp.snippet_active() then
+              return cmp.accept()
+            else
+              return cmp.select_and_accept()
+            end
+          end,
+          "snippet_forward",
+          "fallback",
+        },
+        ["<S-Tab>"] = { "snippet_backward", "fallback" },
+
+        ["<Up>"] = { "select_prev", "fallback" },
+        ["<Down>"] = { "select_next", "fallback" },
+        ["<C-p>"] = { "select_prev", "fallback" },
+        ["<C-n>"] = { "select_next", "fallback" },
+
+        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+
+        ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
+
+        ["<enter>"] = { "select_and_accept", "fallback" },
+
+        -- term = {},
+      },
+    },
   },
 }
