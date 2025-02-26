@@ -1,35 +1,5 @@
 return {
 
-  -- {
-  --
-  --   "saghen/blink.cmp",
-  --   opts = {
-  --     sources = {
-  --       compat = { "avante_commands", "avante_mentions" },
-  --       providers = {
-  --         avante_commands = {
-  --           name = "avante_commands",
-  --           module = "blink.compat.source",
-  --           score_offset = 11, -- show at a higher priority than lsp
-  --           -- opts = {},
-  --         },
-  --         -- avante_files = {
-  --         --   name = "avante_commands",
-  --         --   module = "blink.compat.source",
-  --         --   score_offset = 100, -- show at a higher priority than lsp
-  --         --   -- opts = {},
-  --         -- },
-  --         avante_mentions = {
-  --           name = "avante_mentions",
-  --           module = "blink.compat.source",
-  --           score_offset = 10, -- show at a higher priority than lsp
-  --           -- opts = {},
-  --         },
-  --       },
-  --     },
-  --   },
-  -- },
-
   {
     "saghen/blink.cmp",
     optional = true,
@@ -39,13 +9,15 @@ return {
     opts = {
       sources = {
         -- Add 'avante' to the list
-        default = { "avante", "lsp", "path", "luasnip", "buffer" },
+        default = { "avante" },
         providers = {
           avante = {
             module = "blink-cmp-avante",
             name = "Avante",
             opts = {
-              -- options for blink-cmp-avante
+              kind_icons = {
+                Avante = "󰖷",
+              },
             },
           },
         },
@@ -78,7 +50,7 @@ return {
       local model = LazyVim.env.get("OPENAI_MODEL")
 
       return {
-        debug = false,
+        debug = true,
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = "openai", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
@@ -89,7 +61,7 @@ return {
           timeout = 30000, -- Timeout in milliseconds
           temperature = 0,
         },
-        cursor_applying_provider = nil,
+        cursor_applying_provider = openai,
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
         -- By default, we will use tiktoken.
@@ -127,7 +99,7 @@ return {
           support_paste_from_clipboard = false,
           minimize_diff = true,
           enable_token_counting = true,
-          enable_cursor_planning_mode = false,
+          enable_cursor_planning_mode = true,
         },
         history = {
           max_tokens = 4096,
@@ -166,7 +138,7 @@ return {
           },
           submit = {
             normal = "<CR>",
-            insert = "<C-s>",
+            insert = "<C-CR>",
           },
           -- NOTE: The following will be safely set by avante.nvim
           ask = "<leader>aa",
