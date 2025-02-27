@@ -99,7 +99,7 @@ return {
           support_paste_from_clipboard = false,
           minimize_diff = true,
           enable_token_counting = true,
-          enable_cursor_planning_mode = true,
+          enable_cursor_planning_mode = false,
         },
         history = {
           max_tokens = 4096,
