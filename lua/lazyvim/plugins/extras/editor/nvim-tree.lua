@@ -151,7 +151,7 @@ return {
             return
           end
           local api = require("nvim-tree.api")
-          api.tree.toggle({ path = LazyVim.root(), focus = true })
+          api.tree.open({ path = LazyVim.root(), focus = true })
         end,
         desc = "Toggle File Explorer",
       },

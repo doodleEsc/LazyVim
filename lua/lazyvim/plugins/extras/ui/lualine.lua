@@ -54,7 +54,7 @@ return {
           component_separators = "",
           section_separators = "",
           globalstatus = vim.o.laststatus == 3,
-          disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter", "floaterm" } },
+          disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter", "floaterm", "snacks_dashboard" } },
           theme = {
             -- We are going to use lualine_c an lualine_x as left and
             -- right section. Both are highlighted by c theme .  So we
