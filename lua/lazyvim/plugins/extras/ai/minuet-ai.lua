@@ -57,24 +57,47 @@ return {
         provider = "openai_fim_compatible",
         -- provider = "openai_compatible",
         provider_options = {
+          -- -- Qwen
+          -- openai_fim_compatible = {
+          --   end_point = fim_endpoint .. "/completions",
+          --   api_key = "QWEN_API_KEY",
+          --   name = "Qwen",
+          --   model = fim_model,
+          --   stream = false,
+          --   template = {
+          --     prompt = function(context_before_cursor, context_after_cursor)
+          --       return "<|fim_prefix|>"
+          --         .. context_before_cursor
+          --         .. "<|fim_suffix|>"
+          --         .. context_after_cursor
+          --         .. "<|fim_middle|>"
+          --     end,
+          --     suffix = false,
+          --   },
+          --   optional = {
+          --     temperature = 0.8,
+          --     stop = { "\n\n" },
+          --     max_tokens = 512,
+          --   },
+          -- },
+
+          -- deepseek
           openai_fim_compatible = {
-            end_point = fim_endpoint .. "/completions",
-            api_key = "QWEN_API_KEY",
-            name = "Qwen",
-            model = fim_model,
+            end_point = "https://api.deepseek.com/beta" .. "/completions",
+            api_key = "DS_API_KEY",
+            name = "deepseek",
+            model = "deepseek-chat",
             stream = false,
             template = {
               prompt = function(context_before_cursor, context_after_cursor)
-                return "<|fim_prefix|>"
-                  .. context_before_cursor
-                  .. "<|fim_suffix|>"
-                  .. context_after_cursor
-                  .. "<|fim_middle|>"
+                return context_before_cursor
               end,
-              suffix = false,
+              suffix = function(context_before_cursor, context_after_cursor)
+                return context_after_cursor
+              end,
             },
             optional = {
-              temperature = 0.8,
+              temperature = 0.5,
               stop = { "\n\n" },
               max_tokens = 512,
             },
