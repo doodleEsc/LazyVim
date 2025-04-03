@@ -48,28 +48,114 @@ return {
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
       local model = LazyVim.env.get("OPENAI_MODEL")
+      local google_search_engine_id = LazyVim.env.get("GOOGLE_SEARCH_ENGINE_ID")
 
       return {
         debug = true,
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = "openai", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
-        openai = {
-          endpoint = endpoint,
-          model = model,
-          max_tokens = 4096,
-          timeout = 30000, -- Timeout in milliseconds
-          temperature = 0,
-        },
-        cursor_applying_provider = openai,
+        cursor_applying_provider = "openai",
+        memory_summary_provider = "gemini-2.5-pro-1M-free",
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
         -- By default, we will use tiktoken.
         -- For most providers that we support we will determine this automatically.
         -- If you wish to use a given implementation, then you can override it here.
         tokenizer = "tiktoken",
+        system_prompt = nil,
         rag_service = {
           enabled = false, -- Enables the rag service, requires OPENAI_API_KEY to be set
+          host_mount = os.getenv("HOME"), -- Host mount path for the rag service (docker will mount this path)
+          runner = "docker", -- The runner for the rag service, (can use docker, or nix)
+          provider = "openai", -- The provider to use for RAG service. eg: openai or ollama
+          llm_model = "", -- The LLM model to use for RAG service
+          embed_model = "", -- The embedding model to use for RAG service
+          endpoint = "https://api.openai.com/v1", -- The API endpoint for RAG service
+          docker_extra_args = "", -- Extra arguments to pass to the docker command
+        },
+        web_search_engine = {
+          provider = "google",
+          providers = {
+            google = {
+              api_key_name = "GOOGLE_SEARCH_API_KEY",
+              engine_id_name = "GOOGLE_SEARCH_ENGINE_ID",
+              extra_request_body = {},
+              ---@type WebSearchEngineProviderResponseBodyFormatter
+              format_response_body = function(body)
+                if body.items ~= nil then
+                  local jsn = vim
+                    .iter(body.items)
+                    :map(function(result)
+                      return {
+                        title = result.title,
+                        link = result.link,
+                        snippet = result.snippet,
+                      }
+                    end)
+                    :take(10)
+                    :totable()
+                  return vim.json.encode(jsn), nil
+                end
+                return "", nil
+              end,
+            },
+          },
+        },
+        openai = {
+          endpoint = endpoint,
+          model = model,
+          max_tokens = 100000,
+          timeout = 30000, -- Timeout in milliseconds
+          temperature = 0.3,
+        },
+
+        vendors = {
+          ["gemini-2.5-pro-1M-free"] = {
+            __inherited_from = "openai",
+            model = "google/gemini-2.5-pro-exp-03-25:free",
+            max_tokens = 1000000,
+          },
+          ["gemini-2.0-flash-1M"] = {
+            __inherited_from = "openai",
+            model = "google/gemini-2.0-flash-001",
+            max_tokens = 1000000,
+          },
+          ["gemini-2.0-pro-2M-free"] = {
+            __inherited_from = "openai",
+            model = "google/gemini-2.0-pro-exp-02-05:free",
+            max_tokens = 2000000,
+          },
+
+          ["claude-3.7-sonnet-200K-thinking"] = {
+            __inherited_from = "openai",
+            model = "anthropic/claude-3.7-sonnet:thinking",
+            max_tokens = 200000,
+          },
+
+          ["claude-3.7-sonnet-200K"] = {
+            __inherited_from = "openai",
+            model = "anthropic/claude-3.7-sonnet",
+            max_tokens = 200000,
+          },
+
+          ["claude-3.5-haiku-200K"] = {
+            __inherited_from = "openai",
+            model = "anthropic/claude-3.5-haiku",
+            max_tokens = 200000,
+          },
+
+          ["deepseek-v3-64K"] = {
+            __inherited_from = "openai",
+            model = "deepseek/deepseek-chat-v3-0324",
+            max_tokens = "64000",
+          },
+
+          ["deepseek-r1-164K-thinking"] = {
+            __inherited_from = "openai",
+            model = "deepseek/deepseek-r1",
+            max_tokens = "164000",
+          },
         },
 
         ---Specify the special dual_boost mode
@@ -99,10 +185,12 @@ return {
           support_paste_from_clipboard = false,
           minimize_diff = true,
           enable_token_counting = true,
-          enable_cursor_planning_mode = false,
+          enable_cursor_planning_mode = true,
+          enable_claude_text_editor_tool_mode = true,
+          use_cwd_as_project_root = false,
         },
         history = {
-          max_tokens = 4096,
+          max_tokens = 64000,
           storage_path = vim.fn.stdpath("state") .. "/avante",
           paste = {
             extension = "png",
@@ -219,7 +307,7 @@ return {
         --- @class AvanteFileSelectorConfig
         file_selector = {
           --- @alias FileSelectorProvider "native" | "fzf" | "mini.pick" | "snacks" | "telescope" | string | fun(params: avante.file_selector.IParams|nil): nil
-          provider = "native",
+          provider = "telescope",
           -- Options override for custom providers
           provider_opts = {},
         },
@@ -227,6 +315,9 @@ return {
           debounce = 600,
           throttle = 600,
         },
+        disabled_tools = {}, ---@type string[]
+        ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]
+        custom_tools = {},
       }
     end,
 
@@ -242,7 +333,7 @@ return {
       -- "echasnovski/mini.pick", -- for file_selector provider mini.pick
       "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
       -- "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-      "ibhagwan/fzf-lua", -- for file_selector provider fzf
+      -- "ibhagwan/fzf-lua", -- for file_selector provider fzf
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
       -- "zbirenbaum/copilot.lua", -- for providers='copilot'
       {
