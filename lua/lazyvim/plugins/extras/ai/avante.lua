@@ -76,6 +76,7 @@ return {
         },
         web_search_engine = {
           provider = "google",
+          proxy = "http://127.0.0.1:7890",
           providers = {
             google = {
               api_key_name = "GOOGLE_SEARCH_API_KEY",
