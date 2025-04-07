@@ -354,4 +354,16 @@ return {
       }
     end,
   },
+
+  {
+    "snacks.nvim",
+    optional = true,
+    opts = {
+      terminal = {
+        win = {
+          height = 0.5,
+        },
+      },
+    },
+  },
 }
