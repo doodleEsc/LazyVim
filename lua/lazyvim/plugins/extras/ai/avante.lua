@@ -48,7 +48,6 @@ return {
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
       local model = LazyVim.env.get("OPENAI_MODEL")
-      local google_search_engine_id = LazyVim.env.get("GOOGLE_SEARCH_ENGINE_ID")
 
       return {
         debug = true,
@@ -56,7 +55,7 @@ return {
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = "openai", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
         cursor_applying_provider = "openai",
-        memory_summary_provider = "gemini-2.5-pro-1M-free",
+        memory_summary_provider = "gemini-2.0-flash-1M",
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
         -- By default, we will use tiktoken.
@@ -107,8 +106,8 @@ return {
           endpoint = endpoint,
           model = model,
           max_tokens = 100000,
-          timeout = 30000, -- Timeout in milliseconds
-          temperature = 0.3,
+          timeout = 300000, -- Timeout in milliseconds
+          temperature = 0.5,
         },
 
         vendors = {
@@ -191,7 +190,7 @@ return {
           use_cwd_as_project_root = false,
         },
         history = {
-          max_tokens = 64000,
+          max_tokens = 164000,
           storage_path = vim.fn.stdpath("state") .. "/avante",
           paste = {
             extension = "png",
@@ -310,7 +309,14 @@ return {
           --- @alias FileSelectorProvider "native" | "fzf" | "mini.pick" | "snacks" | "telescope" | string | fun(params: avante.file_selector.IParams|nil): nil
           provider = "telescope",
           -- Options override for custom providers
-          provider_opts = {},
+          provider_opts = {
+            pickers = {
+              find_files = {
+                find_command = { "fd", "-t=f", "-a" },
+                path_display = { "absolute" },
+              },
+            },
+          },
         },
         suggestion = {
           debounce = 600,
