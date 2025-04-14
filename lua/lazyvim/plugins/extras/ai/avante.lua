@@ -48,6 +48,7 @@ return {
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
       local model = LazyVim.env.get("OPENAI_MODEL")
+      local proxy = LazyVim.env.get("OPENAI_PROXY")
 
       return {
         debug = true,
@@ -105,6 +106,7 @@ return {
         openai = {
           endpoint = endpoint,
           model = model,
+          proxy = proxy,
           max_tokens = 100000,
           timeout = 300000, -- Timeout in milliseconds
           temperature = 0.5,
