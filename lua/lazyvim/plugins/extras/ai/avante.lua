@@ -48,7 +48,14 @@ return {
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
       local model = LazyVim.env.get("OPENAI_MODEL")
-      local proxy = LazyVim.env.get("OPENAI_PROXY")
+      local proxy = nil
+      local max_tokens = LazyVim.env.get("OPENAI_MAX_TOKENS")
+      local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY")
+
+      -- If model contains "openai" or "gpt", set proxy to nil
+      if model and (model:lower():find("openai") or model:lower():find("gpt")) then
+        proxy = LazyVim.env.get("OPENAI_PROXY")
+      end
 
       return {
         debug = true,
@@ -76,8 +83,18 @@ return {
         },
         web_search_engine = {
           provider = "google",
-          proxy = "http://127.0.0.1:7890",
+          proxy = google_proxy,
           providers = {
+            tavily = {
+              api_key_name = "TAVILY_API_KEY",
+              extra_request_body = {
+                include_answer = "basic",
+              },
+              ---@type WebSearchEngineProviderResponseBodyFormatter
+              format_response_body = function(body)
+                return body.answer, nil
+              end,
+            },
             google = {
               api_key_name = "GOOGLE_SEARCH_API_KEY",
               engine_id_name = "GOOGLE_SEARCH_ENGINE_ID",
@@ -107,7 +124,7 @@ return {
           endpoint = endpoint,
           model = model,
           proxy = proxy,
-          max_tokens = 100000,
+          max_tokens = tonumber(max_tokens),
           timeout = 300000, -- Timeout in milliseconds
           temperature = 0.5,
         },
