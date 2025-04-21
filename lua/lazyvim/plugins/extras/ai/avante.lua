@@ -66,9 +66,9 @@ return {
         debug = true,
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
         provider = "openai", -- Recommend using Claude
-        auto_suggestions_provider = "openai", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
+        auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
         cursor_applying_provider = "openai",
-        memory_summary_provider = "gemini-2.0-flash-1M",
+        memory_summary_provider = nil,
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
         -- By default, we will use tiktoken.
