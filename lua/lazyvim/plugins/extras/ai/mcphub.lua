@@ -1,4 +1,5 @@
 return {
+
   {
     "ravitemer/mcphub.nvim",
     event = "VeryLazy",
@@ -19,12 +20,20 @@ return {
         auto_approve = true, -- Auto approve mcp tool calls
         -- Extensions configuration
         extensions = {
-          avante = {},
+          avante = {
+            make_slash_commands = true, -- make /slash commands from MCP server prompts
+          },
+          -- codecompanion = {
+          --   -- Show the mcp tool result in the chat buffer
+          --   -- NOTE:if the result is markdown with headers, content after the headers wont be sent by codecompanion
+          --   show_result_in_chat = false,
+          --   make_vars = true, -- make chat #variables from MCP server resources
+          -- },
           codecompanion = {
             -- Show the mcp tool result in the chat buffer
-            -- NOTE:if the result is markdown with headers, content after the headers wont be sent by codecompanion
-            show_result_in_chat = false,
+            show_result_in_chat = true,
             make_vars = true, -- make chat #variables from MCP server resources
+            make_slash_commands = true, -- make /slash_commands from MCP server prompts
           },
         },
 
@@ -87,19 +96,6 @@ return {
     dependencies = {
       "ravitemer/mcphub.nvim",
     },
-
-    -- opts = function(_, opts)
-    --   opts.system_prompt = function()
-    --     local hub = require("mcphub").get_hub_instance()
-    --     return hub:get_active_servers_prompt()
-    --   end
-    --
-    --   table.insert(opts.custom_tools, {
-    --     require("mcphub.extensions.avante").mcp_tool(),
-    --   })
-    --
-    --   return opts
-    -- end,
     opts = {
       system_prompt = function()
         local hub = require("mcphub").get_hub_instance()
@@ -111,6 +107,50 @@ return {
           require("mcphub.extensions.avante").mcp_tool(),
         }
       end,
+      disabled_tools = {
+        "list_files",
+        "search_files",
+        "read_file",
+        "create_file",
+        "rename_file",
+        "delete_file",
+        "create_dir",
+        "rename_dir",
+        "delete_dir",
+        "bash",
+      },
     },
+  },
+
+  {
+
+    "olimorris/codecompanion.nvim",
+    -- optional = true,
+    dependencies = {
+      "ravitemer/mcphub.nvim",
+    },
+
+    opts = {
+      strategies = {
+        chat = {
+          tools = {
+            ["mcp"] = {
+              -- calling it in a function would prevent mcphub from being loaded before it's needed
+              callback = function()
+                return require("mcphub.extensions.codecompanion")
+              end,
+              description = "Call tools and resources from the MCP Servers",
+            },
+          },
+        },
+      },
+    },
+  },
+
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = function(_, opts)
+      table.insert(opts.sections.lualine_x, { require("mcphub.extensions.lualine") })
+    end,
   },
 }
