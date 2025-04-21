@@ -1,6 +1,21 @@
 return {
 
   {
+    "olimorris/codecompanion.nvim",
+    enabled = false,
+  },
+
+  {
+    "folke/which-key.nvim",
+    optional = true,
+    opts = {
+      spec = {
+        { "<leader>a", group = "AI" },
+      },
+    },
+  },
+
+  {
     "saghen/blink.cmp",
     optional = true,
     dependencies = {
@@ -21,16 +36,6 @@ return {
             },
           },
         },
-      },
-    },
-  },
-
-  {
-    "folke/which-key.nvim",
-    optional = true,
-    opts = {
-      spec = {
-        { "<leader>a", group = "AI" },
       },
     },
   },
@@ -70,7 +75,6 @@ return {
         -- For most providers that we support we will determine this automatically.
         -- If you wish to use a given implementation, then you can override it here.
         tokenizer = "tiktoken",
-        system_prompt = nil,
         rag_service = {
           enabled = false, -- Enables the rag service, requires OPENAI_API_KEY to be set
           host_mount = os.getenv("HOME"), -- Host mount path for the rag service (docker will mount this path)
@@ -341,7 +345,10 @@ return {
           debounce = 600,
           throttle = 600,
         },
+
+        system_prompt = nil,
         disabled_tools = {}, ---@type string[]
+        -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
         ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]
         custom_tools = {},
       }
