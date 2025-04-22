@@ -55,6 +55,7 @@ return {
       local model = LazyVim.env.get("OPENAI_MODEL")
       local proxy = nil
       local max_tokens = LazyVim.env.get("OPENAI_MAX_TOKENS")
+      local temperature = LazyVim.env.get("OPENAI_TEMPERATURE")
       local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY")
 
       -- If model contains "openai" or "gpt", set proxy to nil
@@ -62,13 +63,18 @@ return {
         proxy = LazyVim.env.get("OPENAI_PROXY")
       end
 
+      -- If model contains "openai" or "gpt", set proxy to nil
+      if model and (model:lower():find("google") or model:lower():find("gemini")) then
+        temperature = 1.6
+      end
+
       return {
         debug = true,
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
-        cursor_applying_provider = "openai",
-        memory_summary_provider = nil,
+        cursor_applying_provider = "llama-3.3-70b-instruct",
+        memory_summary_provider = "deepseek-v3-64K",
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
         -- By default, we will use tiktoken.
@@ -130,24 +136,25 @@ return {
           proxy = proxy,
           max_tokens = tonumber(max_tokens),
           timeout = 300000, -- Timeout in milliseconds
-          temperature = 0.5,
+          temperature = tonumber(temperature),
         },
 
         vendors = {
-          ["gemini-2.5-pro-1M-free"] = {
+          ["llama-3.3-70b-instruct"] = {
             __inherited_from = "openai",
-            model = "google/gemini-2.5-pro-exp-03-25:free",
+            model = "meta-llama/llama-3.3-70b-instruct",
             max_tokens = 1000000,
           },
           ["gemini-2.0-flash-1M"] = {
             __inherited_from = "openai",
             model = "google/gemini-2.0-flash-001",
             max_tokens = 1000000,
+            temperature = 1,
           },
-          ["gemini-2.0-pro-2M-free"] = {
+          ["gemini-2.5-pro-1M"] = {
             __inherited_from = "openai",
-            model = "google/gemini-2.0-pro-exp-02-05:free",
-            max_tokens = 2000000,
+            model = "google/gemini-2.5-pro-preview-03-25",
+            max_tokens = 1000000,
           },
 
           ["claude-3.7-sonnet-200K-thinking"] = {
@@ -347,7 +354,11 @@ return {
         },
 
         system_prompt = nil,
-        disabled_tools = {}, ---@type string[]
+        disabled_tools = {
+          "git_diff",
+          "git_commit",
+          "python",
+        }, ---@type string[]
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
         ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]
         custom_tools = {},
