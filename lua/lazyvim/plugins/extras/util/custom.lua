@@ -213,6 +213,7 @@ return {
 
   {
     "saghen/blink.cmp",
+    -- optional = true,
     opts = {
       completion = {
         menu = {
@@ -225,9 +226,14 @@ return {
             winhighlight = "Normal:BlinkCmpDoc,FloatBorder:None,EndOfBuffer:BlinkCmpDoc",
           },
         },
-
         trigger = {
           show_in_snippet = false,
+        },
+        list = {
+          selection = {
+            preselect = false,
+            auto_insert = true,
+          },
         },
       },
       keymap = {
@@ -258,8 +264,6 @@ return {
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
 
         ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
-
-        ["<enter>"] = { "select_and_accept", "fallback" },
 
         -- term = {},
       },
