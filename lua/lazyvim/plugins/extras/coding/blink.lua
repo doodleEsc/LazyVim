@@ -153,7 +153,6 @@ return {
         end
       end
 
-      print(vim.inspect(opts))
       require("blink.cmp").setup(opts)
     end,
   },
