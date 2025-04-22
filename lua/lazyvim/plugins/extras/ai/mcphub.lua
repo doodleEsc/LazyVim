@@ -59,22 +59,6 @@ return {
         --set this to true when using build = "bundled_build.lua"
         use_bundled_binary = false, -- Uses bundled mcp-hub instead of global installation
 
-        --WARN: Use the custom setup if you can't use `npm install -g mcp-hub` or cant have `build = "bundled_build.lua"`
-        -- Custom Server command configuration
-        --cmd = "node", -- The command to invoke the MCP Hub Server
-        --cmdArgs = {"/path/to/node_modules/mcp-hub/dist/cli.js"},    -- Additional arguments for the command
-
-        -- Common command configurations (when not using bundled binary):
-        -- 1. Global installation (default):
-        --   cmd = "mcp-hub"
-        --   cmdArgs = {}
-        -- 2. Local npm package:
-        --   cmd = "node"
-        --   cmdArgs = {"/path/to/node_modules/mcp-hub/dist/cli.js"}
-        -- 3. Custom binary:
-        --   cmd = "/usr/local/bin/custom-mcp-hub"
-        --   cmdArgs = {"--custom-flag"}
-
         -- Logging configuration
         log = {
           level = vim.log.levels.WARN,
@@ -92,22 +76,23 @@ return {
 
   {
     "yetone/avante.nvim",
-    -- optional = true,
+    optional = true,
     dependencies = {
       "ravitemer/mcphub.nvim",
     },
-    opts = {
-      system_prompt = function()
+    opts = function(_, opts)
+      opts.system_prompt = function()
         local hub = require("mcphub").get_hub_instance()
         return hub:get_active_servers_prompt()
-      end,
-      -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
-      custom_tools = function()
+      end
+
+      opts.custom_tools = function()
         return {
           require("mcphub.extensions.avante").mcp_tool(),
         }
-      end,
-      disabled_tools = {
+      end
+
+      local buildin_tools = {
         "list_files",
         "search_files",
         "read_file",
@@ -118,18 +103,19 @@ return {
         "rename_dir",
         "delete_dir",
         "bash",
-      },
-    },
+      }
+      for _, value in ipairs(buildin_tools) do
+        table.insert(opts.disabled_tools, value)
+      end
+    end,
   },
 
   {
-
     "olimorris/codecompanion.nvim",
-    -- optional = true,
+    optional = true,
     dependencies = {
       "ravitemer/mcphub.nvim",
     },
-
     opts = {
       strategies = {
         chat = {
@@ -145,12 +131,5 @@ return {
         },
       },
     },
-  },
-
-  {
-    "nvim-lualine/lualine.nvim",
-    opts = function(_, opts)
-      table.insert(opts.sections.lualine_x, { require("mcphub.extensions.lualine") })
-    end,
   },
 }
