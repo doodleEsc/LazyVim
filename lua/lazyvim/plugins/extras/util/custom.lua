@@ -265,6 +265,8 @@ return {
 
         ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
 
+        ["<CR>"] = { "select_and_accept", "fallback" },
+
         -- term = {},
       },
     },
