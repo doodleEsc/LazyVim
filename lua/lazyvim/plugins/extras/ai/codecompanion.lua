@@ -47,11 +47,17 @@ return {
 
       local proxy = nil
       local max_tokens = LazyVim.env.get("OPENAI_MAX_TOKENS")
+      local temperature = LazyVim.env.get("OPENAI_TEMPERATURE")
       local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY")
 
       -- If model contains "openai" or "gpt", set proxy to nil
       if model and (model:lower():find("openai") or model:lower():find("gpt")) then
         proxy = LazyVim.env.get("OPENAI_PROXY")
+      end
+
+      -- If model contains "google" or "gemini", set temperature greater than 1
+      if model and (model:lower():find("google") or model:lower():find("gemini")) then
+        temperature = 1.0
       end
 
       return {
@@ -103,7 +109,7 @@ return {
                   mapping = "parameters",
                   type = "number",
                   optional = true,
-                  default = 0.8,
+                  default = tonumber(temperature),
                   desc = "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. We generally recommend altering this or top_p but not both.",
                   validate = function(n)
                     return n >= 0 and n <= 2, "Must be between 0 and 2"
