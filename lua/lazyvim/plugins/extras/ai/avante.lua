@@ -63,9 +63,9 @@ return {
         proxy = LazyVim.env.get("OPENAI_PROXY")
       end
 
-      -- If model contains "openai" or "gpt", set proxy to nil
+      -- If model contains "gemini" or "google", set temperature greater than 1.0
       if model and (model:lower():find("google") or model:lower():find("gemini")) then
-        temperature = 1.6
+        temperature = 1.5
       end
 
       return {
@@ -357,6 +357,16 @@ return {
         disabled_tools = {
           "git_diff",
           "git_commit",
+          "list_files",
+          "search_files",
+          "read_file",
+          "create_file",
+          "rename_file",
+          "delete_file",
+          "create_dir",
+          "rename_dir",
+          "delete_dir",
+          "bash",
           "python",
         }, ---@type string[]
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
@@ -380,23 +390,23 @@ return {
       -- "ibhagwan/fzf-lua", -- for file_selector provider fzf
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
       -- "zbirenbaum/copilot.lua", -- for providers='copilot'
-      {
-        -- support for image pasting
-        "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
-        opts = {
-          -- recommended settings
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-              insert_mode = true,
-            },
-            -- required for Windows users
-            use_absolute_path = true,
-          },
-        },
-      },
+      -- {
+      --   -- support for image pasting
+      --   "HakonHarnes/img-clip.nvim",
+      --   event = "VeryLazy",
+      --   opts = {
+      --     -- recommended settings
+      --     default = {
+      --       embed_image_as_base64 = false,
+      --       prompt_for_file_name = false,
+      --       drag_and_drop = {
+      --         insert_mode = true,
+      --       },
+      --       -- required for Windows users
+      --       use_absolute_path = true,
+      --     },
+      --   },
+      -- },
       {
         -- Make sure to set this up properly if you have lazy=true
         "MeanderingProgrammer/render-markdown.nvim",
