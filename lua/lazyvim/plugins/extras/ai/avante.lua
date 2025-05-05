@@ -50,6 +50,24 @@ return {
     end,
     version = false, -- set this if you want to always pull the latest change
     build = "make",
+    keys = {
+      {
+        "<leader>a+",
+        function()
+          local tree_ext = require("avante.extensions.nvim_tree")
+          tree_ext.add_file()
+        end,
+        desc = "Select file in NvimTree",
+      },
+      {
+        "<leader>a-",
+        function()
+          local tree_ext = require("avante.extensions.nvim_tree")
+          tree_ext.remove_file()
+        end,
+        desc = "Deselect file in NvimTree",
+      },
+    },
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
       local model = LazyVim.env.get("OPENAI_MODEL")
@@ -69,7 +87,7 @@ return {
       end
 
       return {
-        debug = true,
+        debug = false,
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
@@ -334,8 +352,7 @@ return {
           ignore_patterns = { "%.git", "%.worktree", "__pycache__", "node_modules" }, -- ignore files matching these
           negate_patterns = {}, -- negate ignore files matching these.
         },
-        --- @class AvanteFileSelectorConfig
-        file_selector = {
+        selector = {
           --- @alias FileSelectorProvider "native" | "fzf" | "mini.pick" | "snacks" | "telescope" | string | fun(params: avante.file_selector.IParams|nil): nil
           provider = "telescope",
           -- Options override for custom providers
@@ -347,6 +364,7 @@ return {
               },
             },
           },
+          exclude_auto_select = { "NvimTree" }, -- List of items to exclude from auto selection
         },
         suggestion = {
           debounce = 600,
@@ -389,6 +407,7 @@ return {
       -- "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
       -- "ibhagwan/fzf-lua", -- for file_selector provider fzf
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "nvim-tree/nvim-tree.lua", -- or echasnovski/mini.icons
       -- "zbirenbaum/copilot.lua", -- for providers='copilot'
       -- {
       --   -- support for image pasting
@@ -416,10 +435,5 @@ return {
         ft = { "markdown", "Avante" },
       },
     },
-    config = function(_, opts)
-      require("avante_lib").load()
-      local avante = require("avante")
-      avante.setup(opts)
-    end,
   },
 }
