@@ -102,8 +102,9 @@ return {
 
   {
     "nvim-tree/nvim-tree.lua",
-    cmd = { "NvimTreeOpen", "NvimTreeToggle", "NvimTreeClose" },
-    event = { "SessionLoadPost" },
+    -- cmd = { "NvimTreeOpen", "NvimTreeToggle", "NvimTreeClose" },
+    -- event = { "SessionLoadPost" },
+    event = "VeryLazy",
     init = function()
       vim.api.nvim_create_autocmd({ "SessionLoadPost" }, {
         callback = function()
@@ -160,9 +161,8 @@ return {
       -- "mortepau/codicons.nvim",
       "nvim-tree/nvim-web-devicons",
     },
-    config = function(_, opts)
-      -- local codicons = require("codicons")
-      require("nvim-tree").setup({
+    opts = function()
+      return {
         -- BEGIN_DEFAULT_OPTS
         sync_root_with_cwd = false,
         respect_buf_cwd = false,
@@ -397,7 +397,7 @@ return {
             watcher = false,
           },
         },
-      })
+      }
     end,
   },
 
