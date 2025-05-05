@@ -42,7 +42,7 @@ return {
 
   {
     "yetone/avante.nvim",
-    dev = true,
+    dev = false,
     event = "VeryLazy",
     lazy = true,
     init = function()
