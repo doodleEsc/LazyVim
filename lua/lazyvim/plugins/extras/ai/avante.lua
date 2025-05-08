@@ -83,7 +83,7 @@ return {
 
       -- If model contains "gemini" or "google", set temperature greater than 1.0
       if model and (model:lower():find("google") or model:lower():find("gemini")) then
-        temperature = 1.5
+        temperature = 1.0
       end
 
       return {
@@ -384,7 +384,7 @@ return {
           "create_dir",
           "rename_dir",
           "delete_dir",
-          "bash",
+          "run_python",
           "python",
         }, ---@type string[]
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
