@@ -226,19 +226,6 @@ return {
           require("lspconfig")[server].setup(server_opts)
         end
 
-<<<<<<< HEAD
-      -- get all the servers that are available through mason-lspconfig
-      local have_mason, mlsp = pcall(require, "mason-lspconfig")
-      local all_mslp_servers = {}
-      if have_mason then
-        all_mslp_servers = vim.tbl_keys(require("mason-lspconfig").get_mappings().lspconfig_to_package)
-||||||| parent of 8a52e1bf (fix(mason): conform to v2 changes)
-      -- get all the servers that are available through mason-lspconfig
-      local have_mason, mlsp = pcall(require, "mason-lspconfig")
-      local all_mslp_servers = {}
-      if have_mason then
-        all_mslp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
-=======
         -- manually enable if mason=false or if this is a server that cannot be installed with mason-lspconfig
         if server_opts.mason == false or not vim.tbl_contains(all_mslp_servers, server) then
           if vim.fn.has("nvim-0.11") == 1 then
@@ -249,7 +236,6 @@ return {
           return true
         end
         return false
->>>>>>> 8a52e1bf (fix(mason): conform to v2 changes)
       end
 
       local ensure_installed = {} ---@type string[]
