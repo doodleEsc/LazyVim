@@ -81,15 +81,15 @@ return {
         proxy = LazyVim.env.get("OPENAI_PROXY")
       end
 
-      -- If model contains "gemini" or "google", set temperature greater than 1.0
-      if model and (model:lower():find("google") or model:lower():find("gemini")) then
-        -- temperature = 1.0 + tonumber(temperature)
-        -- vim.notify(temperature)
-        temperature = 1.0
-      end
+      -- -- If model contains "gemini" or "google", set temperature greater than 1.0
+      -- if model and (model:lower():find("google") or model:lower():find("gemini")) then
+      --   -- temperature = 1.0 + tonumber(temperature)
+      --   -- vim.notify(temperature)
+      --   temperature = 1.0
+      -- end
 
       return {
-        debug = false,
+        debug = true,
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
@@ -154,8 +154,8 @@ return {
           endpoint = endpoint,
           model = model,
           proxy = proxy,
-          max_tokens = tonumber(max_tokens),
-          timeout = 300000, -- Timeout in milliseconds
+          -- max_tokens = tonumber(max_tokens),
+          -- timeout = 300000, -- Timeout in milliseconds
           temperature = tonumber(temperature),
         },
 
@@ -388,8 +388,6 @@ return {
           "delete_dir",
           "run_python",
           "python",
-          "bash",
-          "fetch",
         }, ---@type string[]
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
         ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]
