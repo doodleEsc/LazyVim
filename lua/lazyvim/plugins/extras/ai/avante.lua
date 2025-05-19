@@ -372,8 +372,7 @@ return {
           debounce = 600,
           throttle = 600,
         },
-
-        system_prompt = nil,
+        system_prompt = "ALWAYS response in **Chinese** except Code Block",
         disabled_tools = {
           "git_diff",
           "git_commit",
