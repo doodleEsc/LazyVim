@@ -13,6 +13,9 @@ return {
   {
     "doodleEsc/zhim.nvim",
     event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
     keys = {
       {
         "<leader>zh",
@@ -30,18 +33,9 @@ return {
         zh_im = { "2052" },
         default_events = { "VimEnter", "FocusGained", "InsertLeave", "CmdlineLeave" },
         zh_events = { "InsertEnter" },
-        nodes = { "comment", "comment_content", "string", "string_content" },
+        -- nodes = { "comment", "comment_content", "string", "string_content" },
         ft = { "markdown", "AvanteInput" },
       }
-
-      local os = vim.uv.os_uname().sysname
-
-      if os == "Linux" then
-        ret.command = "fcitx5-remote"
-        ret.default_im = { "-s", "keyboard-us" }
-        ret.zh_im = { "-s", "rime" }
-      end
-
       return ret
     end,
   },

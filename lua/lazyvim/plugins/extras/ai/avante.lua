@@ -225,7 +225,7 @@ return {
           timeout = 60000, -- Timeout in milliseconds
         },
         behaviour = {
-          auto_focus_sidebar = true,
+          auto_focus_sidebar = false,
           auto_suggestions = false, -- Experimental stage
           auto_suggestions_respect_ignore = false,
           auto_set_highlight_group = true,
@@ -328,7 +328,7 @@ return {
           ask = {
             floating = false, -- Open the 'AvanteAsk' prompt in a floating window
             border = "rounded",
-            start_insert = true, -- Start insert mode when opening the ask window
+            start_insert = false, -- Start insert mode when opening the ask window
             ---@alias AvanteInitialDiff "ours" | "theirs"
             focus_on_apply = "ours", -- which diff to focus after applying
           },
