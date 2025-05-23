@@ -12,6 +12,7 @@ return {
 
   {
     "doodleEsc/zhim.nvim",
+    enabled = not vim.fn.has("mac"), -- Disable on macOS
     event = "VeryLazy",
     dependencies = {
       "nvim-lua/plenary.nvim",
