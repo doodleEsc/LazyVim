@@ -7,7 +7,7 @@ return {
       "saghen/blink.cmp",
     },
     opts = {
-      idle_time_ms = 2000,
+      idle_time_ms = 5000,
       show_popup_msg = false,
       clear_popup_ms = 5000,
       disabled_filetypes = {
