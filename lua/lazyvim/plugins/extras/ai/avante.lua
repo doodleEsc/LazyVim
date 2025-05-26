@@ -41,7 +41,7 @@ return {
   },
 
   {
-    "yetone/avante.nvim",
+    "doodleEsc/avante.nvim",
     dev = true,
     event = "VeryLazy",
     lazy = true,
