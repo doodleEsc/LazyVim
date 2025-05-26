@@ -42,7 +42,7 @@ return {
 
   {
     "yetone/avante.nvim",
-    dev = false,
+    dev = true,
     event = "VeryLazy",
     lazy = true,
     init = function()
@@ -94,7 +94,7 @@ return {
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
         cursor_applying_provider = "llama-3.3-70b-instruct",
-        memory_summary_provider = "deepseek-v3-64K",
+        memory_summary_provider = "gemini-2.0-flash-lite-001",
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
         -- By default, we will use tiktoken.
@@ -102,13 +102,25 @@ return {
         -- If you wish to use a given implementation, then you can override it here.
         tokenizer = "tiktoken",
         rag_service = {
-          enabled = false, -- Enables the rag service, requires OPENAI_API_KEY to be set
+          enabled = true, -- Enables the rag service, requires OPENAI_API_KEY to be set
           host_mount = os.getenv("HOME"), -- Host mount path for the rag service (docker will mount this path)
+          -- runner = "docker", -- The runner for the rag service, (can use docker, or nix)
           runner = "docker", -- The runner for the rag service, (can use docker, or nix)
-          provider = "openai", -- The provider to use for RAG service. eg: openai or ollama
-          llm_model = "", -- The LLM model to use for RAG service
-          embed_model = "", -- The embedding model to use for RAG service
-          endpoint = "https://api.openai.com/v1", -- The API endpoint for RAG service
+          llm = {
+            provider = "openrouter",
+            endpoint = "https://openrouter.ai/api/v1",
+            api_key = "OPENAI_API_KEY",
+            model = "openai/gpt-4o-mini",
+          },
+          embed = {
+            provider = "ollama", -- The embedding provider
+            endpoint = "http://192.168.50.29:11434", -- The embedding API endpoint
+            api_key = "", -- The environment variable name for the embedding API key
+            model = "nomic-embed-text", -- The embedding model name
+            extra = { -- Extra configuration options for the embedding model
+              embed_batch_size = 25,
+            },
+          },
           docker_extra_args = "", -- Extra arguments to pass to the docker command
         },
         web_search_engine = {
@@ -165,46 +177,35 @@ return {
             model = "meta-llama/llama-3.3-70b-instruct",
             max_tokens = 1000000,
           },
-          ["gemini-2.0-flash-1M"] = {
+          ["gemini-2.0-flash-lite-001"] = {
             __inherited_from = "openai",
-            model = "google/gemini-2.0-flash-001",
-            max_tokens = 1000000,
-            temperature = 1,
-          },
-          ["gemini-2.5-pro-1M"] = {
-            __inherited_from = "openai",
-            model = "google/gemini-2.5-pro-preview-03-25",
+            model = "google/gemini-2.0-flash-lite-001",
             max_tokens = 1000000,
           },
-
-          ["claude-3.7-sonnet-200K-thinking"] = {
+          ["claude-3.7-sonnet-thinking"] = {
             __inherited_from = "openai",
             model = "anthropic/claude-3.7-sonnet:thinking",
             max_tokens = 200000,
           },
-
-          ["claude-3.7-sonnet-200K"] = {
+          ["claude-3.7-sonnet"] = {
             __inherited_from = "openai",
             model = "anthropic/claude-3.7-sonnet",
             max_tokens = 200000,
           },
-
-          ["claude-3.5-haiku-200K"] = {
+          ["claude-3.5-sonnet"] = {
             __inherited_from = "openai",
-            model = "anthropic/claude-3.5-haiku",
+            model = "anthropic/claude-3.5-sonnet",
             max_tokens = 200000,
           },
-
-          ["deepseek-v3-64K"] = {
+          ["gpt-4.1"] = {
             __inherited_from = "openai",
-            model = "deepseek/deepseek-chat-v3-0324",
-            max_tokens = "64000",
+            model = "openai/gpt-4.1",
+            max_tokens = 1000000,
           },
-
-          ["deepseek-r1-164K-thinking"] = {
+          ["o4-mini"] = {
             __inherited_from = "openai",
-            model = "deepseek/deepseek-r1",
-            max_tokens = "164000",
+            model = "openai/o4-mini",
+            max_tokens = 200000,
           },
         },
 
