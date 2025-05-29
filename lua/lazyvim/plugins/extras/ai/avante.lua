@@ -154,7 +154,6 @@ return {
             },
           },
         },
-
         providers = {
           ---@type AvanteSupportedProvider
           openai = {
