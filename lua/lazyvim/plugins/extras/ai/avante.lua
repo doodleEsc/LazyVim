@@ -42,7 +42,7 @@ return {
 
   {
     "doodleEsc/avante.nvim",
-    dev = true,
+    dev = false,
     event = "VeryLazy",
     lazy = true,
     init = function()
@@ -73,7 +73,6 @@ return {
       local model = LazyVim.env.get("OPENAI_MODEL")
       local proxy = nil
       local max_tokens = LazyVim.env.get("OPENAI_MAX_TOKENS")
-      local temperature = LazyVim.env.get("OPENAI_TEMPERATURE")
       local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY")
 
       -- If model contains "openai" or "gpt", set proxy to nil
@@ -81,15 +80,10 @@ return {
         proxy = LazyVim.env.get("OPENAI_PROXY")
       end
 
-      -- -- If model contains "gemini" or "google", set temperature greater than 1.0
-      -- if model and (model:lower():find("google") or model:lower():find("gemini")) then
-      --   -- temperature = 1.0 + tonumber(temperature)
-      --   -- vim.notify(temperature)
-      --   temperature = 1.0
-      -- end
-
       return {
-        debug = true,
+        debug = false,
+        ---@alias avante.Mode "agentic" | "legacy"
+        mode = "agentic",
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
@@ -166,9 +160,10 @@ return {
           endpoint = endpoint,
           model = model,
           proxy = proxy,
-          -- max_tokens = tonumber(max_tokens),
-          -- timeout = 300000, -- Timeout in milliseconds
-          temperature = tonumber(temperature),
+          timeout = 300000,
+          temperature = 0,
+          max_completion_tokens = tonumber(max_tokens), -- Increase this to include reasoning tokens (for reasoning models)
+          reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
         },
 
         vendors = {
@@ -236,9 +231,8 @@ return {
           support_paste_from_clipboard = false,
           minimize_diff = true,
           enable_token_counting = true,
-          enable_cursor_planning_mode = true,
-          enable_claude_text_editor_tool_mode = true,
           use_cwd_as_project_root = false,
+          auto_focus_on_diff_view = false,
         },
         history = {
           max_tokens = 164000,
@@ -253,6 +247,10 @@ return {
             current = nil,
             incoming = nil,
           },
+        },
+        img_paste = {
+          url_encode_path = false,
+          template = "\nimage: $FILE_PATH\n",
         },
         mappings = {
           ---@class AvanteConflictMappings
@@ -281,9 +279,11 @@ return {
           },
           -- NOTE: The following will be safely set by avante.nvim
           ask = "<leader>aa",
+          new_ask = "<leader>an",
           edit = "<leader>ae",
           refresh = "<leader>ar",
           focus = "<leader>af",
+          stop = "<leader>aS",
           toggle = {
             default = "<leader>at",
             debug = "<leader>ad",
@@ -300,16 +300,22 @@ return {
             reverse_switch_windows = "<S-Tab>",
             remove_file = "d",
             add_file = "@",
-            close = { "<Esc>", "q" },
+            close = { "q" },
+            ---@alias AvanteCloseFromInput { normal: string | nil, insert: string | nil }
+            ---@type AvanteCloseFromInput | nil
+            close_from_input = nil, -- e.g., { normal = "<Esc>", insert = "<C-d>" }
           },
           files = {
             add_current = "<leader>ac", -- Add current buffer to selected files
+            add_all_buffers = "<leader>aB", -- Add all buffer files to selected files
           },
           select_model = "<leader>a?", -- Select model command
+          select_history = "<leader>ah", -- Select history command
         },
         windows = {
           ---@alias AvantePosition "right" | "left" | "top" | "bottom" | "smart"
           position = "right",
+          fillchars = "eob: ",
           wrap = true, -- similar to vim.o.wrap
           width = 30, -- default % based on available width in vertical layout
           height = 30, -- default % based on available height in horizontal layout
@@ -323,12 +329,12 @@ return {
             height = 8, -- Height of the input window in vertical layout
           },
           edit = {
-            border = "rounded",
+            border = { " ", " ", " ", " ", " ", " ", " ", " " },
             start_insert = true, -- Start insert mode when opening the edit window
           },
           ask = {
             floating = false, -- Open the 'AvanteAsk' prompt in a floating window
-            border = "rounded",
+            border = { " ", " ", " ", " ", " ", " ", " ", " " },
             start_insert = false, -- Start insert mode when opening the ask window
             ---@alias AvanteInitialDiff "ours" | "theirs"
             focus_on_apply = "ours", -- which diff to focus after applying
@@ -341,10 +347,6 @@ return {
           --- Helps to avoid entering operator-pending mode with diff mappings starting with `c`.
           --- Disable by setting to -1.
           override_timeoutlen = 500,
-        },
-        run_command = {
-          -- Only applies to macOS and Linux
-          shell_cmd = "sh -c",
         },
         --- @class AvanteHintsConfig
         hints = {
@@ -374,6 +376,10 @@ return {
           throttle = 600,
         },
         system_prompt = "ALWAYS response in **Chinese** except Code Block",
+        -- override_prompt_dir = function()
+        --   return vim.fn.stdpath("config") .. "/templates"
+        -- end,
+        override_prompt_dir = nil,
         disabled_tools = {
           "git_diff",
           "git_commit",
@@ -392,6 +398,8 @@ return {
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
         ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]
         custom_tools = {},
+        ---@type AvanteSlashCommand[]
+        slash_commands = {},
       }
     end,
 
