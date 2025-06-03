@@ -43,6 +43,7 @@ return {
   {
     "doodleEsc/avante.nvim",
     dev = false,
+    branch = "dev",
     event = "VeryLazy",
     lazy = true,
     init = function()
@@ -88,7 +89,7 @@ return {
         provider = "openai", -- Recommend using Claude
         auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
         cursor_applying_provider = "llama-3.3-70b-instruct",
-        memory_summary_provider = "gemini-2.0-flash-lite-001",
+        memory_summary_provider = "gpt-4.1",
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
         -- By default, we will use tiktoken.
@@ -96,9 +97,8 @@ return {
         -- If you wish to use a given implementation, then you can override it here.
         tokenizer = "tiktoken",
         rag_service = {
-          enabled = true, -- Enables the rag service, requires OPENAI_API_KEY to be set
+          enabled = false, -- Enables the rag service, requires OPENAI_API_KEY to be set
           host_mount = os.getenv("HOME"), -- Host mount path for the rag service (docker will mount this path)
-          -- runner = "docker", -- The runner for the rag service, (can use docker, or nix)
           runner = "docker", -- The runner for the rag service, (can use docker, or nix)
           llm = {
             provider = "openrouter",
@@ -156,17 +156,19 @@ return {
             },
           },
         },
-        openai = {
-          endpoint = endpoint,
-          model = model,
-          proxy = proxy,
-          timeout = 300000,
-          temperature = 0,
-          max_completion_tokens = tonumber(max_tokens), -- Increase this to include reasoning tokens (for reasoning models)
-          reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
-        },
 
-        vendors = {
+        providers = {
+          ---@type AvanteSupportedProvider
+          openai = {
+            endpoint = endpoint,
+            model = model,
+            timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+            extra_request_body = {
+              temperature = 0.75,
+              max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
+              reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+            },
+          },
           ["llama-3.3-70b-instruct"] = {
             __inherited_from = "openai",
             model = "meta-llama/llama-3.3-70b-instruct",
@@ -381,19 +383,19 @@ return {
         -- end,
         override_prompt_dir = nil,
         disabled_tools = {
-          "git_diff",
-          "git_commit",
-          "list_files",
-          "search_files",
-          "read_file",
-          "create_file",
-          "rename_file",
-          "delete_file",
-          "create_dir",
-          "rename_dir",
-          "delete_dir",
-          "run_python",
-          "python",
+          -- "git_diff",
+          -- "git_commit",
+          -- "list_files",
+          -- "search_files",
+          -- "read_file",
+          -- "create_file",
+          -- "rename_file",
+          -- "delete_file",
+          -- "create_dir",
+          -- "rename_dir",
+          -- "delete_dir",
+          -- "run_python",
+          -- "python",
         }, ---@type string[]
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
         ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]
