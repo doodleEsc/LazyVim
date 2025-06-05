@@ -1,5 +1,3 @@
-local completion = require("blink.cmp.completion")
-local trigger = require("blink.cmp.completion.trigger")
 --- Add the startup section
 ---@return snacks.dashboard.Section
 local function dashboardStartup()
@@ -371,17 +369,5 @@ return {
         },
       },
     },
-  },
-
-  {
-    "lewis6991/gitsigns.nvim",
-    optional = true,
-    event = "VeryLazy",
-  },
-
-  {
-    "folke/todo-comments.nvim",
-    optional = true,
-    event = "VeryLazy",
   },
 }
