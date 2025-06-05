@@ -372,4 +372,16 @@ return {
       },
     },
   },
+
+  {
+    "lewis6991/gitsigns.nvim",
+    optional = true,
+    event = "VeryLazy",
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    optional = true,
+    event = "VeryLazy",
+  },
 }
