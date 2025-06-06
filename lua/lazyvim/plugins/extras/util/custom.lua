@@ -161,6 +161,11 @@ return {
         "help",
         "qf",
         "notify",
+        "snacks_dashboard",
+      }
+
+      local filtered_buf_names = {
+        "kulala://ui",
       }
 
       opts.options.custom_filter = function(buf_number, buf_numbers)
@@ -170,6 +175,14 @@ return {
             return false
           end
         end
+
+        local buf_name = vim.fn.bufname(buf_number)
+        for _, filtered_buf_name in ipairs(filtered_buf_names) do
+          if buf_name == filtered_buf_name then
+            return false
+          end
+        end
+
         return true
       end
       opts.options.always_show_bufferline = false
