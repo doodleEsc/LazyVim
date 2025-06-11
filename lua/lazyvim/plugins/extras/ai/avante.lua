@@ -41,9 +41,7 @@ return {
   },
 
   {
-    "doodleEsc/avante.nvim",
-    dev = false,
-    branch = "dev",
+    "yetone/avante.nvim",
     event = "VeryLazy",
     lazy = true,
     init = function()
