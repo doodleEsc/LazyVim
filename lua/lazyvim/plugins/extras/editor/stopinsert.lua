@@ -1,7 +1,6 @@
 return {
   {
     "doodleEsc/stopinsert.nvim",
-    dev = true,
     event = "VeryLazy",
     dependencies = {
       "saghen/blink.cmp",
