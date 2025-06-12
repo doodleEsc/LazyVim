@@ -70,9 +70,9 @@ return {
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
       local model = LazyVim.env.get("OPENAI_MODEL")
+      local rag_service_enabled = LazyVim.env.get("RAG_SERVICE_ENABLED") == "true"
+      local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY") or false
       local proxy = nil
-      local max_tokens = LazyVim.env.get("OPENAI_MAX_TOKENS")
-      local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY")
 
       -- If model contains "openai" or "gpt", set proxy to nil
       if model and (model:lower():find("openai") or model:lower():find("gpt")) then
@@ -95,7 +95,7 @@ return {
         -- If you wish to use a given implementation, then you can override it here.
         tokenizer = "tiktoken",
         rag_service = {
-          enabled = false, -- Enables the rag service, requires OPENAI_API_KEY to be set
+          enabled = rag_service_enabled, -- Enables the rag service, requires OPENAI_API_KEY to be set
           host_mount = os.getenv("HOME"), -- Host mount path for the rag service (docker will mount this path)
           runner = "docker", -- The runner for the rag service, (can use docker, or nix)
           llm = {
@@ -160,10 +160,11 @@ return {
             endpoint = endpoint,
             model = model,
             timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+            proxy = proxy,
             extra_request_body = {
-              temperature = 0.75,
+              temperature = 0.3,
               max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
-              reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+              reasoning_effort = "low", -- low|medium|high, only used for reasoning models
             },
           },
           ["llama-3.3-70b-instruct"] = {
