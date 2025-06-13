@@ -70,6 +70,7 @@ return {
     opts = function()
       local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
       local model = LazyVim.env.get("OPENAI_MODEL")
+      local temperature = LazyVim.env.get("OPENAI_TEMPERATURE")
       local rag_service_enabled = LazyVim.env.get("RAG_SERVICE_ENABLED") == "true"
       local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY") or false
       local proxy = nil
@@ -162,7 +163,7 @@ return {
             timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
             proxy = proxy,
             extra_request_body = {
-              temperature = 0.3,
+              temperature = tonumber(temperature),
               max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
               reasoning_effort = "low", -- low|medium|high, only used for reasoning models
             },
