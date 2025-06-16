@@ -13,7 +13,7 @@ return {
       proxy = nil,
       translate_engine = {
         base_url = "https://openrouter.ai/api/v1",
-        model = "qwen/qwen-turbo",
+        model = "openai/gpt-4o-mini",
       },
       detect_engine = {
         base_url = "https://openrouter.ai/api/v1",
