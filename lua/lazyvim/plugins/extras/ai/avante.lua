@@ -43,6 +43,7 @@ return {
   {
     "yetone/avante.nvim",
     event = "VeryLazy",
+    dev = true,
     lazy = true,
     init = function()
       LazyVim.env.load()
@@ -81,7 +82,7 @@ return {
       end
 
       return {
-        debug = false,
+        debug = true,
         ---@alias avante.Mode "agentic" | "legacy"
         mode = "agentic",
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
@@ -167,6 +168,7 @@ return {
               max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
               reasoning_effort = "low", -- low|medium|high, only used for reasoning models
             },
+            use_ReAct_prompt = false,
           },
           ["llama-3.3-70b-instruct"] = {
             __inherited_from = "openai",
@@ -376,7 +378,17 @@ return {
           debounce = 600,
           throttle = 600,
         },
-        system_prompt = "ALWAYS response in **Chinese** except Code Block",
+        system_prompt = [[====
+
+EXTRA RULES
+
+* Your first action for any given task must be to use the `thinking` tool, using the thinking tool to outline a step-by-step plan. Do not execute any other tool or write code before thinking.
+
+* You must manage all tasks using the `add_todos` and `update_todo_status` tools.
+
+* For any task planning or code generation/modification, strictly adhere to the idiomatic conventions and established best practices for the project's primary language.
+
+* Your primary language for all user-facing communication is **Simplified Chinese**. This includes all explanations, analysis, questions, confirmations, and final summaries.]],
         -- override_prompt_dir = function()
         --   return vim.fn.stdpath("config") .. "/templates"
         -- end,
@@ -441,9 +453,9 @@ return {
         -- Make sure to set this up properly if you have lazy=true
         "MeanderingProgrammer/render-markdown.nvim",
         opts = {
-          file_types = { "markdown", "Avante" },
+          file_types = { "markdown", "Avante", "AvanteTodos" },
         },
-        ft = { "markdown", "Avante" },
+        ft = { "markdown", "Avante", "AvanteTodos" },
       },
     },
   },
