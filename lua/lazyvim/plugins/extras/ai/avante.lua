@@ -43,7 +43,6 @@ return {
   {
     "yetone/avante.nvim",
     event = "VeryLazy",
-    dev = true,
     lazy = true,
     init = function()
       LazyVim.env.load()
@@ -82,7 +81,7 @@ return {
       end
 
       return {
-        debug = true,
+        debug = false,
         ---@alias avante.Mode "agentic" | "legacy"
         mode = "agentic",
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
