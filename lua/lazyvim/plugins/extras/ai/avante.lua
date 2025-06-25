@@ -235,10 +235,26 @@ return {
           enable_token_counting = true,
           use_cwd_as_project_root = false,
           auto_focus_on_diff_view = false,
+          ---@type boolean | string[] -- true: auto-approve all tools, false: normal prompts, string[]: auto-approve specific tools by name
+          auto_approve_tool_permissions = false, -- Default: show permission prompts for all tools
+          auto_check_diagnostics = true,
+        },
+        prompt_logger = { -- logs prompts to disk (timestamped, for replay/debugging)
+          enabled = true, -- toggle logging entirely
+          -- log_dir = Utils.join_paths(vim.fn.stdpath("cache"), "avante_prompts"), -- directory where logs are saved
+          fortune_cookie_on_success = false, -- shows a random fortune after each logged prompt (requires `fortune` installed)
+          next_prompt = {
+            normal = "<M-n>", -- load the next (newer) prompt log in normal mode
+            insert = "<M-n>",
+          },
+          prev_prompt = {
+            normal = "<M-p>", -- load the previous (older) prompt log in normal mode
+            insert = "<M-p>",
+          },
         },
         history = {
-          max_tokens = 164000,
-          storage_path = vim.fn.stdpath("state") .. "/avante",
+          max_tokens = 4096,
+          carried_entry_count = nil,
           paste = {
             extension = "png",
             filename = "pasted-%Y-%m-%d-%H-%M-%S",
@@ -251,7 +267,7 @@ return {
           },
         },
         img_paste = {
-          url_encode_path = false,
+          url_encode_path = true,
           template = "\nimage: $FILE_PATH\n",
         },
         mappings = {
@@ -278,6 +294,10 @@ return {
           submit = {
             normal = "<CR>",
             insert = "<C-CR>",
+          },
+          cancel = {
+            normal = { "<C-c>", "<Esc>", "q" },
+            insert = { "<C-c>" },
           },
           -- NOTE: The following will be safely set by avante.nvim
           ask = "<leader>aa",
@@ -313,9 +333,16 @@ return {
           },
           select_model = "<leader>a?", -- Select model command
           select_history = "<leader>ah", -- Select history command
+          confirm = {
+            focus_window = "<C-w>f",
+            code = "c",
+            resp = "r",
+            input = "i",
+          },
         },
         windows = {
           ---@alias AvantePosition "right" | "left" | "top" | "bottom" | "smart"
+          ---@type AvantePosition
           position = "right",
           fillchars = "eob: ",
           wrap = true, -- similar to vim.o.wrap
@@ -328,7 +355,7 @@ return {
           },
           input = {
             prefix = "> ",
-            height = 8, -- Height of the input window in vertical layout
+            height = 6, -- Height of the input window in vertical layout
           },
           edit = {
             border = { " ", " ", " ", " ", " ", " ", " ", " " },
@@ -337,8 +364,9 @@ return {
           ask = {
             floating = false, -- Open the 'AvanteAsk' prompt in a floating window
             border = { " ", " ", " ", " ", " ", " ", " ", " " },
-            start_insert = false, -- Start insert mode when opening the ask window
+            start_insert = true, -- Start insert mode when opening the ask window
             ---@alias AvanteInitialDiff "ours" | "theirs"
+            ---@type AvanteInitialDiff
             focus_on_apply = "ours", -- which diff to focus after applying
           },
         },
@@ -372,6 +400,10 @@ return {
             },
           },
           exclude_auto_select = { "NvimTree" }, -- List of items to exclude from auto selection
+        },
+        input = {
+          provider = "native",
+          provider_opts = {},
         },
         suggestion = {
           debounce = 600,
