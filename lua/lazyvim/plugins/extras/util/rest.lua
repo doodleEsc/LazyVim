@@ -49,4 +49,28 @@ return {
       })
     end,
   },
+  {
+    "mason-org/mason.nvim",
+    opts = function(_, opts)
+      opts.registries = opts.registries or {}
+      table.insert(opts.registries, "github:mistweaverco/zana-registry")
+      opts.ensure_installed = opts.ensure_installed or {}
+      table.insert(opts.ensure_installed, "kulala-fmt")
+      table.insert(opts.ensure_installed, "kulala-ls")
+    end,
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        http = { "kulala-fmt" },
+      },
+    },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = { "http", "graphql" },
+    },
+  },
 }
