@@ -424,7 +424,7 @@ EXTRA RULES
         override_prompt_dir = nil,
         disabled_tools = {
           "git_commit",
-          -- "git_diff",
+          "git_diff",
           -- "list_files",
           -- "search_files",
           -- "read_file",
