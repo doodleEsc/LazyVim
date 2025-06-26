@@ -414,11 +414,9 @@ return {
 EXTRA RULES
 
 * Your first action for any given task must be to use the `thinking` tool, using the thinking tool to outline a step-by-step plan. Do not execute any other tool or write code before thinking.
-
 * You must manage all tasks using the `add_todos` and `update_todo_status` tools.
-
+* Always use the `restart_lsp_server` tool to restart the language server after installing new dependencies. This is required to fix potential import errors.
 * For any task planning or code generation/modification, strictly adhere to the idiomatic conventions and established best practices for the project's primary language.
-
 * Your primary language for all user-facing communication is **Simplified Chinese**. This includes all explanations, analysis, questions, confirmations, and final summaries.]],
         -- override_prompt_dir = function()
         --   return vim.fn.stdpath("config") .. "/templates"
@@ -441,7 +439,40 @@ EXTRA RULES
         }, ---@type string[]
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
         ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]
-        custom_tools = {},
+        custom_tools = {
+          {
+            name = "restart_lsp_server", -- Unique name for the tool
+            description = "Restarts the language server (LSP). This action is required to fix import errors after installing new dependencies. A reason for the restart must be provided.", -- Description shown to AI
+            param = { -- Input parameters
+              type = "table",
+              fields = {
+                {
+                  name = "reason",
+                  description = "The reason why the language server needs to be restarted (e.g., 'to load the new 'golang.org/x/tools' dependency').",
+                  type = "string",
+                  -- This field is required by default (optional = false)
+                },
+              },
+            },
+            returns = { -- Expected return values
+              {
+                name = "status",
+                description = "A confirmation that the restart command was executed.",
+                type = "string",
+              },
+            },
+            func = function(params, on_log, on_complete) -- Custom function to execute
+              -- Check if the reason was provided, with a fallback just in case
+              local reason = params.reason or "No reason specified"
+              -- Use vim.notify to show the reason to the user
+              vim.notify("Restarting LSP server: " .. reason, vim.log.levels.INFO)
+              -- Execute the core command
+              vim.cmd([[LspRestart]])
+              -- Return a success message to the Agent to confirm the action was taken.
+              return "LSP server restart command issued successfully."
+            end,
+          },
+        },
         ---@type AvanteSlashCommand[]
         slash_commands = {},
       }
