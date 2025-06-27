@@ -108,7 +108,7 @@ return {
           embed = {
             provider = "ollama", -- The embedding provider
             endpoint = "http://192.168.50.29:11434", -- The embedding API endpoint
-            api_key = "", -- The environment variable name for the embedding API key
+            api_key = nil, -- The environment variable name for the embedding API key
             model = "nomic-embed-text", -- The embedding model name
             extra = { -- Extra configuration options for the embedding model
               embed_batch_size = 25,
