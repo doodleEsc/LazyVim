@@ -14,58 +14,43 @@ return {
     opts = function()
       return {
         port = 37373, -- Default port for MCP Hub
-        config = vim.fn.expand("~/.config/mcphub/servers.json"), -- Absolute path to config file location (will create if not exists)
-        native_servers = {}, -- add your native servers here
-
-        auto_approve = true, -- Auto approve mcp tool calls
-        -- Extensions configuration
-        extensions = {
-          avante = {
-            make_slash_commands = true, -- make /slash commands from MCP server prompts
-          },
-          -- codecompanion = {
-          --   -- Show the mcp tool result in the chat buffer
-          --   -- NOTE:if the result is markdown with headers, content after the headers wont be sent by codecompanion
-          --   show_result_in_chat = false,
-          --   make_vars = true, -- make chat #variables from MCP server resources
-          -- },
-          codecompanion = {
-            -- Show the mcp tool result in the chat buffer
-            show_result_in_chat = true,
-            make_vars = true, -- make chat #variables from MCP server resources
-            make_slash_commands = true, -- make /slash_commands from MCP server prompts
-          },
-        },
-
-        -- Default window settings
-        ui = {
-          window = {
-            width = 0.8, -- 0-1 (ratio); "50%" (percentage); 50 (raw number)
-            height = 0.8, -- 0-1 (ratio); "50%" (percentage); 50 (raw number)
-            relative = "editor",
-            zindex = 50,
-            border = "rounded", -- "none", "single", "double", "rounded", "solid", "shadow"
-          },
-        },
-
-        -- Event callbacks
-        on_ready = function(hub)
-          -- Called when hub is ready
-        end,
-        on_error = function(err)
-          -- Called on errors
-        end,
-
-        --set this to true when using build = "bundled_build.lua"
-        use_bundled_binary = false, -- Uses bundled mcp-hub instead of global installation
-
-        -- Logging configuration
+        server_url = nil, -- In cases where mcp-hub is hosted somewhere, set this to the server URL e.g `http://mydomain.com:customport` or `https://url_without_need_for_port.com`
+        config = vim.fn.expand("~/.config/mcphub/servers.json"), -- Default config location
+        shutdown_delay = 10 * 60 * 1000, -- 10 minutes -- Delay before shutting down the mcp-hub
+        mcp_request_timeout = 60000, --Timeout for MCP requests in milliseconds, useful for long running tasks
+        ---@type table<string, NativeServerDef>
+        native_servers = {},
+        builtin_tools = {},
+        ---@type boolean | fun(parsed_params: MCPHub.ParsedParams): boolean | nil | string  Function to determine if a call should be auto-approved
+        auto_approve = false,
+        auto_toggle_mcp_servers = true, -- Let LLMs start and stop MCP servers automatically
+        use_bundled_binary = false, -- Whether to use bundled mcp-hub binary
+        ---@type string?
+        cmd = nil, -- will be set based on system if not provided
+        ---@type table?
+        cmdArgs = nil, -- will be set based on system if not provided
+        ---@type LogConfig
         log = {
-          level = vim.log.levels.WARN,
+          level = vim.log.levels.ERROR,
           to_file = false,
           file_path = nil,
           prefix = "MCPHub",
         },
+        ---@type MCPHub.UIConfig
+        ui = {
+          window = {},
+          wo = {},
+        },
+        ---@type MCPHub.Extensions.Config
+        extensions = {
+          avante = {
+            enabled = true,
+            make_slash_commands = true,
+          },
+        },
+        on_ready = function() end,
+        ---@param msg string
+        on_error = function(msg) end,
       }
     end,
 
@@ -81,31 +66,17 @@ return {
       "ravitemer/mcphub.nvim",
     },
     opts = function(_, opts)
+      local system_prompt = opts.system_prompt
+
       opts.system_prompt = function()
         local hub = require("mcphub").get_hub_instance()
-        return hub:get_active_servers_prompt()
+        return system_prompt .. "\n====\n" .. hub:get_active_servers_prompt()
       end
 
       opts.custom_tools = function()
         return {
           require("mcphub.extensions.avante").mcp_tool(),
         }
-      end
-
-      local buildin_tools = {
-        "list_files",
-        "search_files",
-        "read_file",
-        "create_file",
-        "rename_file",
-        "delete_file",
-        "create_dir",
-        "rename_dir",
-        "delete_dir",
-        "bash",
-      }
-      for _, value in ipairs(buildin_tools) do
-        table.insert(opts.disabled_tools, value)
       end
     end,
   },
