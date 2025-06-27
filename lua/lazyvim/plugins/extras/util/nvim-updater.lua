@@ -11,6 +11,11 @@ return {
         verbose = false, -- Default verbose mode
         default_keymaps = false, -- Use default keymaps
         build_fresh = true, -- Always remove build dir before building
+        env = {
+          NINJA_J = 1,
+          CC = "clang",
+          CXX = "clang++",
+        },
       })
     end,
     keys = { -- Custom keymappings

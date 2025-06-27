@@ -425,17 +425,6 @@ EXTRA RULES
         disabled_tools = {
           "git_commit",
           "git_diff",
-          -- "list_files",
-          -- "search_files",
-          -- "read_file",
-          -- "create_file",
-          -- "rename_file",
-          -- "delete_file",
-          -- "create_dir",
-          -- "rename_dir",
-          -- "delete_dir",
-          -- "run_python",
-          -- "python",
         }, ---@type string[]
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
         ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]
