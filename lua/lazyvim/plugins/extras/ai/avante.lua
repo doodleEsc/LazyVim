@@ -81,7 +81,7 @@ return {
       end
 
       return {
-        debug = false,
+        debug = true,
         ---@alias avante.Mode "agentic" | "legacy"
         mode = "agentic",
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
@@ -413,6 +413,7 @@ return {
 
 EXTRA RULES
 
+* For any chat without a specific task, call the `attempt_completion` tool to greet the user back and immediately provide examples of what you can do.
 * Your first action for any given task must be to use the `thinking` tool, using the thinking tool to outline a step-by-step plan. Do not execute any other tool or write code before thinking.
 * You must manage all tasks using the `add_todos` and `update_todo_status` tools.
 * Always use the `restart_lsp_server` tool to restart the language server after installing new dependencies. This is required to fix potential import errors.
