@@ -70,7 +70,14 @@ return {
 
       opts.system_prompt = function()
         local hub = require("mcphub").get_hub_instance()
-        return system_prompt .. "\n====\n" .. hub:get_active_servers_prompt()
+        return system_prompt
+          .. "\n====\n"
+          .. hub:get_active_servers_prompt(true, false)
+          .. "\n\n# Additional Rules\n\n"
+          .. [[
+* Use the context7 tool to fetch the latest and most accurate official documentation and code examples whenever you are uncertain about any API, library, or framework, or when I explicitly request it. Ensure all information you provide is fact-based and completely reliable.
+* When I provide a Figma link, immediately use the Figma-Context-MCP tool to fetch its metadata. Thoroughly analyze its layout, colors, fonts, and dimensions, and then generate a high-quality, high-fidelity front-end code implementation based on these precise design specifications.
+          ]]
       end
 
       opts.custom_tools = function()

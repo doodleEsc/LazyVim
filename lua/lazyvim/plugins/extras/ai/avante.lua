@@ -418,9 +418,6 @@ EXTRA RULES
 * Always use the `restart_lsp_server` tool to restart the language server after installing new dependencies. This is required to fix potential import errors.
 * For any task planning or code generation/modification, strictly adhere to the idiomatic conventions and established best practices for the project's primary language.
 * Your primary language for all user-facing communication is **Simplified Chinese**. This includes all explanations, analysis, questions, confirmations, and final summaries.]],
-        -- override_prompt_dir = function()
-        --   return vim.fn.stdpath("config") .. "/templates"
-        -- end,
         override_prompt_dir = nil,
         disabled_tools = {
           "git_commit",
