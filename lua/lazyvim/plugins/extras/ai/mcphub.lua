@@ -78,10 +78,8 @@ return {
           .. hub:get_active_servers_prompt(true, false)
       end
 
-      opts.custom_tools = function()
-        return {
-          require("mcphub.extensions.avante").mcp_tool(),
-        }
+      for _, tool in ipairs(require("mcphub.extensions.avante").mcp_tool()) do
+        table.insert(opts.custom_tools, tool)
       end
     end,
   },
