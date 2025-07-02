@@ -109,7 +109,7 @@ return {
             provider = "ollama", -- The embedding provider
             endpoint = "http://192.168.50.29:11434", -- The embedding API endpoint
             api_key = nil, -- The environment variable name for the embedding API key
-            model = "nomic-embed-text", -- The embedding model name
+            model = "inke/Qwen3-Embedding-8B:latest", -- The embedding model name
             extra = { -- Extra configuration options for the embedding model
               embed_batch_size = 25,
             },
@@ -355,7 +355,7 @@ return {
           },
           input = {
             prefix = "> ",
-            height = 6, -- Height of the input window in vertical layout
+            height = 12, -- Height of the input window in vertical layout
           },
           edit = {
             border = { " ", " ", " ", " ", " ", " ", " ", " " },
@@ -409,17 +409,14 @@ return {
           debounce = 600,
           throttle = 600,
         },
-        system_prompt = [[====
-
-EXTRA RULES
-
-* For any chat without a specific task, call the `attempt_completion` tool to greet the user back and immediately provide examples of what you can do.
-* Your first action for any given task must be to use the `thinking` tool, using the thinking tool to outline a step-by-step plan. Do not execute any other tool or write code before thinking.
-* You must manage all tasks using the `add_todos` and `update_todo_status` tools.
-* Always use the `restart_lsp_server` tool to restart the language server after installing new dependencies. This is required to fix potential import errors.
-* For any task planning or code generation/modification, strictly adhere to the idiomatic conventions and established best practices for the project's primary language.
-* Your primary language for all user-facing communication is **Simplified Chinese**. This includes all explanations, analysis, questions, confirmations, and final summaries.]],
-        override_prompt_dir = nil,
+        system_prompt = nil,
+        override_prompt_dir = function()
+          return vim.fn.stdpath("config") .. "/avante/templates"
+        end,
+        rules = {
+          project_dir = nil,
+          global_dir = "~/.config/nvim/avante/rules",
+        },
         disabled_tools = {
           "git_commit",
           "git_diff",
