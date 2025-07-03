@@ -70,15 +70,11 @@ return {
 
       opts.system_prompt = function()
         local hub = require("mcphub").get_hub_instance()
-        return system_prompt
-          .. [[
-*  Use the context7 tool to fetch the latest and most accurate official documentation and code examples whenever you are uncertain about any API, library, or framework, or when I explicitly request it. Ensure all information you provide is fact-based and completely reliable.
-*  When Figma link provided, immediately use the Figma-Context-MCP tool to fetch its metadata. Thoroughly analyze its layout, colors, fonts, and dimensions, and then generate a high-quality, high-fidelity front-end code implementation based on these precise design specifications.]]
-          .. "\n====\n"
-          .. hub:get_active_servers_prompt(true, false)
+        return system_prompt .. "\n====\n" .. hub:get_active_servers_prompt(true, false)
       end
 
-      for _, tool in ipairs(require("mcphub.extensions.avante").mcp_tool()) do
+      local tools_list = { require("mcphub.extensions.avante").mcp_tool() }
+      for _, tool in ipairs(tools_list) do
         table.insert(opts.custom_tools, tool)
       end
     end,

@@ -75,6 +75,9 @@ return {
       local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY") or false
       local proxy = nil
 
+      local override_prompt_dir = vim.fn.stdpath("config") .. "/avante/templates"
+      local global_rule_dir = vim.fn.stdpath("config") .. "/avante/rules"
+
       -- If model contains "openai" or "gpt", set proxy to nil
       if model and (model:lower():find("openai") or model:lower():find("gpt")) then
         proxy = LazyVim.env.get("OPENAI_PROXY")
@@ -410,16 +413,17 @@ return {
           throttle = 600,
         },
         system_prompt = nil,
-        override_prompt_dir = function()
-          return vim.fn.stdpath("config") .. "/avante/templates"
-        end,
+        override_prompt_dir = override_prompt_dir,
         rules = {
           project_dir = nil,
-          global_dir = "~/.config/nvim/avante/rules",
+          global_dir = global_rule_dir,
         },
         disabled_tools = {
           "git_commit",
           "git_diff",
+          "undo_edit",
+          "read_definitions",
+          "read_file_toplevel_symbols",
         }, ---@type string[]
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
         ---@type AvanteLLMToolPublic[] | fun(): AvanteLLMToolPublic[]

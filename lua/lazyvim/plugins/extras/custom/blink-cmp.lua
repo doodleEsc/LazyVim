@@ -24,9 +24,6 @@ return {
       },
     },
     keymap = {
-      -- set to 'none' to disable the 'default' preset
-      preset = "none",
-
       ["<C-e>"] = { "hide", "fallback" },
 
       ["<Tab>"] = {
@@ -58,4 +55,3 @@ return {
     },
   },
 }
-
