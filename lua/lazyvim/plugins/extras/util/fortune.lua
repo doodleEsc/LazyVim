@@ -44,7 +44,7 @@ return {
       -- }
       custom_tips = {},
 
-      language = "en", -- default language
+      language = "zh", -- default language
     },
   },
 
