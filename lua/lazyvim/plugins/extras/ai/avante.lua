@@ -167,11 +167,18 @@ return {
             proxy = proxy,
             extra_request_body = {
               temperature = tonumber(temperature),
-              max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
-              reasoning_effort = "low", -- low|medium|high, only used for reasoning models
+              -- max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
+              -- reasoning_effort = "low", -- low|medium|high, only used for reasoning models
+              reasoning = {
+                -- effort = "low",
+                max_tokens = 200,
+                exclude = false,
+                enabled = true,
+              },
             },
             use_ReAct_prompt = false,
           },
+
           ["llama-3.3-70b-instruct"] = {
             __inherited_from = "openai",
             model = "meta-llama/llama-3.3-70b-instruct",
