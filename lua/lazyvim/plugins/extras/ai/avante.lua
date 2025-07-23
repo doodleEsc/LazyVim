@@ -178,6 +178,12 @@ return {
             },
             use_ReAct_prompt = false,
           },
+          morph = {
+            __inherited_from = "openai",
+            endpoint = endpoint,
+            model = "morph/morph-v3-large",
+            api_key_name = "MORPH_API_KEY",
+          },
 
           ["llama-3.3-70b-instruct"] = {
             __inherited_from = "openai",
@@ -248,6 +254,7 @@ return {
           ---@type boolean | string[] -- true: auto-approve all tools, false: normal prompts, string[]: auto-approve specific tools by name
           auto_approve_tool_permissions = false, -- Default: show permission prompts for all tools
           auto_check_diagnostics = true,
+          enable_fastapply = false,
         },
         prompt_logger = { -- logs prompts to disk (timestamped, for replay/debugging)
           enabled = true, -- toggle logging entirely
