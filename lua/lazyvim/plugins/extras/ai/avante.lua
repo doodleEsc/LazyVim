@@ -19,7 +19,7 @@ return {
     "saghen/blink.cmp",
     optional = true,
     dependencies = {
-      "Kaiser-Yang/blink-cmp-avante",
+      "doodleEsc/blink-cmp-avante",
     },
     opts = {
       sources = {
