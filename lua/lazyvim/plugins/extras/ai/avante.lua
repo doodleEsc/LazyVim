@@ -477,6 +477,9 @@ return {
         },
         ---@type AvanteSlashCommand[]
         slash_commands = {},
+
+        ---@type AvanteShortcut[]
+        shortcuts = {},
       }
     end,
 
