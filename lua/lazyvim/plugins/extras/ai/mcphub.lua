@@ -18,6 +18,13 @@ return {
         config = vim.fn.expand("~/.config/mcphub/servers.json"), -- Default config location
         shutdown_delay = 10 * 60 * 1000, -- 10 minutes -- Delay before shutting down the mcp-hub
         mcp_request_timeout = 60000, --Timeout for MCP requests in milliseconds, useful for long running tasks
+        workspace = {
+          enabled = false, -- Enable project-local configuration files
+          look_for = { ".mcphub/servers.json", ".vscode/mcp.json", ".cursor/mcp.json" }, -- Files to look for when detecting project boundaries (VS Code format supported)
+          reload_on_dir_changed = true, -- Automatically switch hubs on DirChanged event
+          port_range = { min = 40000, max = 41000 }, -- Port range for generating unique workspace ports
+          get_port = nil, -- Optional function returning custom port number. Called when generating ports to allow custom port assignment logic
+        },
         ---@type table<string, NativeServerDef>
         native_servers = {},
         builtin_tools = {},

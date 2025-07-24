@@ -68,30 +68,22 @@ return {
       },
     },
     opts = function()
-      local endpoint = LazyVim.env.get("OPENAI_BASE_URL")
-      local model = LazyVim.env.get("OPENAI_MODEL")
-      local temperature = LazyVim.env.get("OPENAI_TEMPERATURE")
+      local provider = LazyVim.env.get("AVANTE_PROVIDER")
       local rag_service_enabled = LazyVim.env.get("RAG_SERVICE_ENABLED") == "true"
       local google_proxy = LazyVim.env.get("GOOGLE_SEARCH_PROXY") or false
-      local proxy = nil
-
+      local proxy = LazyVim.env.get("OPENAI_PROXY")
       local override_prompt_dir = vim.fn.stdpath("config") .. "/avante/templates"
       local global_rule_dir = vim.fn.stdpath("config") .. "/avante/rules"
-
-      -- If model contains "openai" or "gpt", set proxy to nil
-      if model and (model:lower():find("openai") or model:lower():find("gpt")) then
-        proxy = LazyVim.env.get("OPENAI_PROXY")
-      end
 
       return {
         debug = false,
         ---@alias avante.Mode "agentic" | "legacy"
         mode = "agentic",
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
-        provider = "openai", -- Recommend using Claude
+        provider = provider, -- Recommend using Claude
         auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
         cursor_applying_provider = "llama-3.3-70b-instruct",
-        memory_summary_provider = "gpt-4.1",
+        memory_summary_provider = "gemini-2.5-flash-lite",
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
         -- By default, we will use tiktoken.
@@ -159,66 +151,107 @@ return {
           },
         },
         providers = {
+
           ---@type AvanteSupportedProvider
-          openai = {
-            endpoint = endpoint,
-            model = model,
-            timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
-            proxy = proxy,
+          ["gemini-2.5-flash"] = {
+            __inherited_from = "openai",
+            endpoint = "https://openrouter.ai/api/v1",
+            model = "google/gemini-2.5-flash",
             extra_request_body = {
-              temperature = tonumber(temperature),
-              -- max_completion_tokens = 16384, -- Increase this to include reasoning tokens (for reasoning models)
-              -- reasoning_effort = "low", -- low|medium|high, only used for reasoning models
+              temperature = 0.5,
               reasoning = {
-                -- effort = "low",
                 max_tokens = 200,
                 exclude = false,
                 enabled = true,
               },
             },
-            use_ReAct_prompt = false,
           },
-          morph = {
+
+          ---@type AvanteSupportedProvider
+          ["gemini-2.5-flash-lite"] = {
             __inherited_from = "openai",
-            endpoint = endpoint,
-            model = "morph/morph-v3-large",
-            api_key_name = "MORPH_API_KEY",
+            endpoint = "https://openrouter.ai/api/v1",
+            model = "google/gemini-2.5-flash-lite",
+            extra_request_body = {
+              temperature = 0.3,
+              reasoning = {
+                max_tokens = 200,
+                exclude = false,
+                enabled = true,
+              },
+            },
+          },
+
+          ---@type AvanteSupportedProvider
+          ["o4-mini"] = {
+            __inherited_from = "openai",
+            endpoint = "https://openrouter.ai/api/v1",
+            model = "openai/o4-mini",
+            proxy = proxy,
+            extra_request_body = {
+              temperature = 0.5,
+              reasoning = {
+                effort = "low",
+                exclude = false,
+                enabled = true,
+              },
+            },
+          },
+
+          ---@type AvanteSupportedProvider
+          ["qwen3-coder"] = {
+            __inherited_from = "openai",
+            endpoint = "https://openrouter.ai/api/v1",
+            model = "qwen/qwen3-coder",
+            extra_request_body = {
+              temperature = 0.5,
+              reasoning = {
+                effort = "low",
+                exclude = false,
+                enabled = true,
+              },
+              provider = {
+                only = {
+                  "alibaba/plus",
+                },
+              },
+            },
+          },
+
+          ---@type AvanteSupportedProvider
+          ["kimi-k2"] = {
+            __inherited_from = "openai",
+            endpoint = "https://openrouter.ai/api/v1",
+            model = "moonshotai/kimi-k2",
+            extra_request_body = {
+              temperature = 0.5,
+              reasoning = {
+                effort = "low",
+                exclude = false,
+                enabled = true,
+              },
+              provider = {
+                ignore = {
+                  "targon/fp8",
+                },
+                quantizations = {
+                  "fp8",
+                },
+              },
+            },
           },
 
           ["llama-3.3-70b-instruct"] = {
             __inherited_from = "openai",
+            endpoint = "https://openrouter.ai/api/v1",
             model = "meta-llama/llama-3.3-70b-instruct",
-            max_tokens = 1000000,
           },
-          ["gemini-2.0-flash-lite-001"] = {
+
+          morph = {
             __inherited_from = "openai",
-            model = "google/gemini-2.0-flash-lite-001",
-            max_tokens = 1000000,
-          },
-          ["claude-3.7-sonnet-thinking"] = {
-            __inherited_from = "openai",
-            model = "anthropic/claude-3.7-sonnet:thinking",
-            max_tokens = 200000,
-          },
-          ["claude-3.7-sonnet"] = {
-            __inherited_from = "openai",
-            model = "anthropic/claude-3.7-sonnet",
-            max_tokens = 200000,
-          },
-          ["claude-3.5-sonnet"] = {
-            __inherited_from = "openai",
-            model = "anthropic/claude-3.5-sonnet",
-            max_tokens = 200000,
-          },
-          ["gpt-4.1"] = {
-            __inherited_from = "openai",
-            model = "openai/gpt-4.1",
-            max_tokens = 1000000,
-          },
-          ["o4-mini"] = {
-            __inherited_from = "openai",
-            model = "openai/o4-mini",
-            max_tokens = 200000,
+            endpoint = "https://openrouter.ai/api/v1",
+            model = "morph/morph-v3-large",
+            api_key_name = "OPENAI_API_KEY",
           },
         },
 
