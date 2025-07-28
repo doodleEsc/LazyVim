@@ -74,6 +74,7 @@ return {
       local proxy = LazyVim.env.get("OPENAI_PROXY")
       local override_prompt_dir = vim.fn.stdpath("config") .. "/avante/templates"
       local global_rule_dir = vim.fn.stdpath("config") .. "/avante/rules"
+      local enable_fastapply = LazyVim.env.get("AVANTE_FAST_APPLY") == "true"
 
       return {
         debug = false,
@@ -82,7 +83,6 @@ return {
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "vertex" | "cohere" | "copilot" | string
         provider = provider, -- Recommend using Claude
         auto_suggestions_provider = nil, -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
-        cursor_applying_provider = "llama-3.3-70b-instruct",
         memory_summary_provider = "gemini-2.5-flash-lite",
         ---@alias Tokenizer "tiktoken" | "hf"
         -- Used for counting tokens and encoding text.
@@ -241,12 +241,6 @@ return {
             },
           },
 
-          ["llama-3.3-70b-instruct"] = {
-            __inherited_from = "openai",
-            endpoint = "https://openrouter.ai/api/v1",
-            model = "meta-llama/llama-3.3-70b-instruct",
-          },
-
           morph = {
             __inherited_from = "openai",
             endpoint = "https://openrouter.ai/api/v1",
@@ -287,7 +281,7 @@ return {
           ---@type boolean | string[] -- true: auto-approve all tools, false: normal prompts, string[]: auto-approve specific tools by name
           auto_approve_tool_permissions = false, -- Default: show permission prompts for all tools
           auto_check_diagnostics = true,
-          enable_fastapply = false,
+          enable_fastapply = enable_fastapply,
         },
         prompt_logger = { -- logs prompts to disk (timestamped, for replay/debugging)
           enabled = true, -- toggle logging entirely
