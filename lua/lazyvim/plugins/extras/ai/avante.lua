@@ -152,13 +152,51 @@ return {
         },
         providers = {
 
-          claude = {
+          ["opus"] = {
+            __inherited_from = "claude",
+            endpoint = "http://localhost:8082",
+            model = "claude-opus-4-20250514",
+            timeout = 30000, -- Timeout in milliseconds
+            extra_request_body = {
+              temperature = 0.8,
+              max_tokens = 20480,
+            },
+          },
+
+          ["sonnet"] = {
+            __inherited_from = "claude",
             endpoint = "http://localhost:8082",
             model = "claude-sonnet-4-20250514",
             timeout = 30000, -- Timeout in milliseconds
             extra_request_body = {
-              temperature = 0.75,
+              temperature = 0.8,
               max_tokens = 20480,
+            },
+          },
+
+          ["haiku"] = {
+            __inherited_from = "claude",
+            endpoint = "http://localhost:8082",
+            model = "claude-3-5-haiku-latest",
+            timeout = 30000, -- Timeout in milliseconds
+            extra_request_body = {
+              temperature = 0.8,
+              max_tokens = 8192,
+            },
+          },
+
+          ---@type AvanteSupportedProvider
+          ["gemini-2.5-pro"] = {
+            __inherited_from = "openai",
+            endpoint = "https://openrouter.ai/api/v1",
+            model = "google/gemini-2.5-pro",
+            extra_request_body = {
+              temperature = 0.8,
+              reasoning = {
+                max_tokens = 200,
+                exclude = false,
+                enabled = true,
+              },
             },
           },
 
@@ -168,7 +206,7 @@ return {
             endpoint = "https://openrouter.ai/api/v1",
             model = "google/gemini-2.5-flash",
             extra_request_body = {
-              temperature = 0.5,
+              temperature = 0.8,
               reasoning = {
                 max_tokens = 200,
                 exclude = false,
@@ -193,10 +231,10 @@ return {
           },
 
           ---@type AvanteSupportedProvider
-          ["o4-mini"] = {
+          ["gpt-4.1"] = {
             __inherited_from = "openai",
             endpoint = "https://openrouter.ai/api/v1",
-            model = "openai/o4-mini",
+            model = "openai/gpt-4.1",
             proxy = proxy,
             extra_request_body = {
               temperature = 0.5,
@@ -248,6 +286,33 @@ return {
                   "fp8",
                 },
               },
+            },
+          },
+
+          ---@type AvanteSupportedProvider
+          ["deepseek-r1"] = {
+            __inherited_from = "openai",
+            endpoint = "https://api.deepseek.com",
+            api_key_name = "DEEPSEEK_API_KEY",
+            model = "deepseek-reasoner",
+            extra_request_body = {
+              temperature = 0.5,
+              reasoning = {
+                effort = "low",
+                exclude = false,
+                enabled = true,
+              },
+            },
+          },
+
+          ---@type AvanteSupportedProvider
+          ["deepseek-v3"] = {
+            __inherited_from = "openai",
+            endpoint = "https://api.deepseek.com",
+            api_key_name = "DEEPSEEK_API_KEY",
+            model = "deepseek-chat",
+            extra_request_body = {
+              temperature = 0.5,
             },
           },
 
