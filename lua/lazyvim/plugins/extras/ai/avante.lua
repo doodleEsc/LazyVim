@@ -160,6 +160,11 @@ return {
             extra_request_body = {
               temperature = 0.8,
               max_tokens = 20480,
+              reasoning = {
+                max_tokens = 200,
+                exclude = false,
+                enabled = true,
+              },
             },
           },
 
@@ -171,6 +176,11 @@ return {
             extra_request_body = {
               temperature = 0.8,
               max_tokens = 20480,
+              reasoning = {
+                max_tokens = 200,
+                exclude = false,
+                enabled = true,
+              },
             },
           },
 
@@ -181,7 +191,12 @@ return {
             timeout = 30000, -- Timeout in milliseconds
             extra_request_body = {
               temperature = 0.8,
-              max_tokens = 8192,
+              max_tokens = 8190,
+              reasoning = {
+                max_tokens = 200,
+                exclude = false,
+                enabled = true,
+              },
             },
           },
 
