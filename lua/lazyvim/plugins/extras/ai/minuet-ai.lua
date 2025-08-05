@@ -5,10 +5,9 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
-
-    -- init = function()
-    --   LazyVim.env.load()
-    -- end,
+    init = function()
+      LazyVim.env.load()
+    end,
     opts = function()
       return {
         -- Enable or disable auto-completion. Note that you still need to add
@@ -78,7 +77,7 @@ return {
         context_ratio = 0.75,
         throttle = 1000, -- only send the request every x milliseconds, use 0 to disable throttle.
         -- debounce the request in x milliseconds, set to 0 to disable debounce
-        debounce = 400,
+        debounce = 1000,
         -- Control notification display for request status
         -- Notification options:
         -- false: Disable all notifications (use boolean false, not string "false")
@@ -86,7 +85,7 @@ return {
         -- "verbose": Display most notifications
         -- "warn": Display warnings and errors only
         -- "error": Display errors only
-        notify = "debug",
+        notify = "warn",
         -- The request timeout, measured in seconds. When streaming is enabled
         -- (stream = true), setting a shorter request_timeout allows for faster
         -- retrieval of completion items, albeit potentially incomplete.
@@ -103,7 +102,7 @@ return {
         -- actual number of returned items may exceed this value. Additionally, the
         -- chat LLM cannot guarantee the exact number of completion items
         -- specified, as this parameter serves only as a prompt guideline.
-        n_completions = 2,
+        n_completions = 3,
         -- Defines the length of non-whitespace context after the cursor used to
         -- filter completion text. Set to 0 to disable filtering.
         --
@@ -138,14 +137,63 @@ return {
               stop = nil,
               top_p = 0.95,
               temperature = 0.3,
-              max_tokens = 256,
+              max_tokens = 64,
               provider = {
-                quantizations = {
-                  "fp8",
-                },
+                -- Prioritize throughput for faster completion
+                sort = "throughput",
               },
             },
           },
+
+          -- -- Qwen
+          -- openai_fim_compatible = {
+          --   end_point = "https://openrouter.ai/api/v1/completions",
+          --   api_key = "OPENAI_API_KEY",
+          --   name = "DeepSeek",
+          --   model = "deepseek/deepseek-chat-v3-0324",
+          --   stream = false,
+          --   template = {
+          --     -- prompt = function(context_before_cursor, context_after_cursor)
+          --     --   return "<|fim_prefix|>"
+          --     --     .. context_before_cursor
+          --     --     .. "<|fim_suffix|>"
+          --     --     .. context_after_cursor
+          --     --     .. "<|fim_middle|>"
+          --     -- end,
+          --     -- suffix = false,
+          --
+          --     prompt = function(context_before_cursor, context_after_cursor, opts)
+          --       return context_before_cursor
+          --     end,
+          --     suffix = function(context_before_cursor, context_after_cursor, opts)
+          --       return context_after_cursor
+          --     end,
+          --   },
+          --   optional = {
+          --     stop = nil,
+          --     top_p = 0.95,
+          --     temperature = 0.2,
+          --     max_tokens = 64,
+          --     -- provider = {
+          --     --   quantizations = {
+          --     --     "fp8",
+          --     --   },
+          --     -- },
+          --     provider = {
+          --       -- Prioritize throughput for faster completion
+          --       sort = "throughput",
+          --     },
+          --   },
+          -- },
+
+          -- openai_fim_compatible = {
+          --   api_key = "DEEPSEEK_API_KEY",
+          --   name = "deepseek",
+          --   optional = {
+          --     max_tokens = 256,
+          --     top_p = 0.9,
+          --   },
+          -- },
 
           openai_compatible = {
             end_point = "https://openrouter.ai/api/v1/chat/completions",
