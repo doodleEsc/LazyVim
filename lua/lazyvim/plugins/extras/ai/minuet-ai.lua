@@ -121,8 +121,7 @@ return {
             end_point = "https://openrouter.ai/api/v1/completions",
             api_key = "OPENAI_API_KEY",
             name = "Qwen",
-            -- model = "qwen/qwen-2.5-coder-32b-instruct",
-            model = "qwen/qwen3-coder",
+            model = "qwen/qwen-2.5-coder-32b-instruct",
             stream = true,
             template = {
               prompt = function(context_before_cursor, context_after_cursor)
@@ -145,56 +144,6 @@ return {
               },
             },
           },
-
-          -- -- Qwen
-          -- openai_fim_compatible = {
-          --   end_point = "https://openrouter.ai/api/v1/completions",
-          --   api_key = "OPENAI_API_KEY",
-          --   name = "DeepSeek",
-          --   model = "deepseek/deepseek-chat-v3-0324",
-          --   stream = false,
-          --   template = {
-          --     -- prompt = function(context_before_cursor, context_after_cursor)
-          --     --   return "<|fim_prefix|>"
-          --     --     .. context_before_cursor
-          --     --     .. "<|fim_suffix|>"
-          --     --     .. context_after_cursor
-          --     --     .. "<|fim_middle|>"
-          --     -- end,
-          --     -- suffix = false,
-          --
-          --     prompt = function(context_before_cursor, context_after_cursor, opts)
-          --       return context_before_cursor
-          --     end,
-          --     suffix = function(context_before_cursor, context_after_cursor, opts)
-          --       return context_after_cursor
-          --     end,
-          --   },
-          --   optional = {
-          --     stop = nil,
-          --     top_p = 0.95,
-          --     temperature = 0.2,
-          --     max_tokens = 64,
-          --     -- provider = {
-          --     --   quantizations = {
-          --     --     "fp8",
-          --     --   },
-          --     -- },
-          --     provider = {
-          --       -- Prioritize throughput for faster completion
-          --       sort = "throughput",
-          --     },
-          --   },
-          -- },
-
-          -- openai_fim_compatible = {
-          --   api_key = "DEEPSEEK_API_KEY",
-          --   name = "deepseek",
-          --   optional = {
-          --     max_tokens = 256,
-          --     top_p = 0.9,
-          --   },
-          -- },
 
           openai_compatible = {
             end_point = "https://openrouter.ai/api/v1/chat/completions",
