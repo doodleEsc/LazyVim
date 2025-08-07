@@ -121,7 +121,8 @@ return {
             end_point = "https://openrouter.ai/api/v1/completions",
             api_key = "OPENAI_API_KEY",
             name = "Qwen",
-            model = "qwen/qwen-2.5-coder-32b-instruct",
+            -- model = "qwen/qwen-2.5-coder-32b-instruct",
+            model = "qwen/qwen3-coder",
             stream = true,
             template = {
               prompt = function(context_before_cursor, context_after_cursor)
@@ -211,9 +212,6 @@ return {
         presets = {},
       }
     end,
-    -- config = function(_, opts)
-    --   require("minuet").setup(opts)
-    -- end,
   },
 
   {
