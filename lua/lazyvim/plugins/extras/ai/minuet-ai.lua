@@ -121,7 +121,7 @@ return {
             end_point = "https://openrouter.ai/api/v1/completions",
             api_key = "OPENAI_API_KEY",
             name = "Qwen",
-            model = "qwen/qwen3-coder",
+            model = "qwen/qwen-2.5-coder-32b-instruct",
             stream = true,
             template = {
               prompt = function(context_before_cursor, context_after_cursor)
@@ -136,7 +136,7 @@ return {
             optional = {
               stop = nil,
               top_p = 0.95,
-              temperature = 0.3,
+              temperature = 0,
               max_tokens = 64,
               provider = {
                 -- Prioritize throughput for faster completion
