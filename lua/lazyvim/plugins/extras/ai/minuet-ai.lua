@@ -20,7 +20,7 @@ return {
           enable_auto_complete = false,
         },
         blink = {
-          enable_auto_complete = false,
+          enable_auto_complete = true,
         },
         -- LSP is recommended only for built-in completion. If you are using
         -- `cmp` or `blink`, utilizing LSP for code completion from Minuet is *not*
@@ -121,7 +121,7 @@ return {
             end_point = "https://openrouter.ai/api/v1/completions",
             api_key = "OPENAI_API_KEY",
             name = "Qwen",
-            model = "qwen/qwen-2.5-coder-32b-instruct",
+            model = "qwen/qwen3-coder",
             stream = true,
             template = {
               prompt = function(context_before_cursor, context_after_cursor)
@@ -153,7 +153,7 @@ return {
             name = "Openrouter",
             stream = true,
             optional = {
-              max_tokens = 256,
+              max_tokens = 64,
               top_p = 0.9,
             },
           },
@@ -163,30 +163,52 @@ return {
     end,
   },
 
-  {
-    "saghen/blink.cmp",
-    optional = true,
-    opts = {
-      keymap = {
-        ["<C-y>"] = {
-          function(cmp)
-            cmp.show({ providers = { "minuet" } })
-          end,
-        },
-      },
-      sources = {
-        -- if you want to use auto-complete
-        default = { "minuet" },
-        providers = {
-          minuet = {
-            name = "minuet",
-            module = "minuet.blink",
-            score_offset = 100,
+  vim.g.ai_cmp
+      and {
+        "saghen/blink.cmp",
+        optional = true,
+        opts = {
+          completion = {
+            menu = {
+              scrolloff = 4,
+              direction_priority = function()
+                local selected_item = require("blink.cmp").get_selected_item()
+
+                if selected_item then
+                  if selected_item.source_id == "minuet" then
+                    return { "n", "s" }
+                  end
+                end
+
+                return { "s", "n" }
+              end,
+            },
+          },
+          keymap = {
+            ["<C-y>"] = {
+              function(cmp)
+                cmp.show({ providers = { "minuet" } })
+              end,
+            },
+          },
+          sources = {
+            -- if you want to use auto-complete
+            default = { "minuet" },
+            providers = {
+              minuet = {
+                name = "minuet",
+                module = "minuet.blink",
+                async = true,
+                -- Should match minuet.config.request_timeout * 1000,
+                -- since minuet.config.request_timeout is in seconds
+                timeout_ms = 3000,
+                score_offset = 50, -- Gives minuet higher priority among suggestions
+              },
+            },
           },
         },
-      },
-    },
-  },
+      }
+    or nil,
 
   {
     "nvim-cmp",
