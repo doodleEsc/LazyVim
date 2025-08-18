@@ -20,7 +20,7 @@ return {
           enable_auto_complete = false,
         },
         blink = {
-          enable_auto_complete = true,
+          enable_auto_complete = false,
         },
         -- LSP is recommended only for built-in completion. If you are using
         -- `cmp` or `blink`, utilizing LSP for code completion from Minuet is *not*
