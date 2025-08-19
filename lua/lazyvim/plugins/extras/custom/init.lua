@@ -8,4 +8,5 @@ return {
   require("lazyvim.plugins.extras.custom.markdown-preview"),
   require("lazyvim.plugins.extras.custom.telescope"),
   require("lazyvim.plugins.extras.custom.outline"),
+  require("lazyvim.plugins.extras.custom.conform"),
 }
