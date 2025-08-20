@@ -77,23 +77,23 @@ return {
 
     opts.highlights = {
       buffer_selected = {
-        fg = "#000000",
-        bg = "#fabd2f",
+        fg = "#f9f5d7",
+        bg = "#458588",
       },
       close_button_selected = {
-        fg = "#000000",
-        bg = "#fabd2f",
+        fg = "#f9f5d7",
+        bg = "#458588",
       },
       separator_selected = {
-        bg = "#fabd2f",
+        bg = "#458588",
       },
       duplicate_selected = {
-        fg = "#000000",
-        bg = "#fabd2f",
+        fg = "#f9f5d7",
+        bg = "#458588",
       },
       modified_selected = {
-        fg = "#000000",
-        bg = "#fabd2f",
+        fg = "#f9f5d7",
+        bg = "#458588",
       },
     }
   end,
