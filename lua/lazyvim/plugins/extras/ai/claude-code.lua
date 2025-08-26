@@ -4,7 +4,7 @@ return {
     dependencies = { "folke/snacks.nvim" },
     config = true,
     keys = {
-      { "<leader>a", nil, desc = "AI/Claude Code" },
+      -- { "<leader>a", nil, desc = "AI/Claude Code" },
       { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
       { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
       { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
@@ -51,6 +51,16 @@ return {
         vertical_split = true,
         open_in_current_tab = true,
         keep_terminal_focus = false, -- If true, moves focus back to terminal after diff opens
+      },
+    },
+  },
+
+  {
+    "folke/which-key.nvim",
+    optional = true,
+    opts = {
+      spec = {
+        { "<leader>a", group = "AI Assistant" },
       },
     },
   },

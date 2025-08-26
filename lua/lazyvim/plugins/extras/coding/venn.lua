@@ -20,7 +20,6 @@ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
       end,
     },
     mode = "n",
-    -- body = "<leader>ve",
     heads = {
       { "<C-h>", "xi<C-v>u25c4<Esc>" }, -- mode = 'v' somehow breaks
       { "<C-j>", "xi<C-v>u25bc<Esc>" },
@@ -45,6 +44,15 @@ return {
     event = "VeryLazy",
     dependencies = {
       "nvimtools/hydra.nvim",
+    },
+    keys = {
+      {
+        "<leader>hv",
+        function()
+          LazyVim.hydra.run("venn")
+        end,
+        desc = "Venn Diagram Hydra",
+      },
     },
     config = function(_, opts)
       LazyVim.hydra.add("venn", venn_hydra_factory)
