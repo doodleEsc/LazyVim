@@ -1,6 +1,7 @@
 return {
   {
     "doodleEsc/translator.nvim",
+    dev = true,
     event = "VeryLazy",
     keys = {
       { "<leader>ts", ":Translate<CR>", mode = "v", desc = "Translate" },
@@ -21,7 +22,7 @@ return {
       },
       ui = {
         width = 0.6,
-        height = 0.3,
+        height = 0.8,
         border = {
           style = "double",
           text = {
