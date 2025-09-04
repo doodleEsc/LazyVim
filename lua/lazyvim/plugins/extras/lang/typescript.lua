@@ -27,7 +27,12 @@ return {
         ts_ls = {
           enabled = false,
         },
+        denols = {
+          enabled = true,
+        },
         vtsls = {
+          enabled = true,
+          single_file_support = false,
           -- explicitly add default filetypes, so that we can extend
           -- them in related extras
           filetypes = {
@@ -131,7 +136,24 @@ return {
           -- disable tsserver
           return true
         end,
+        denols = function(_, opts)
+          -- Check if project root is a Deno project using vim.fs.root
+          local is_deno_project = vim.fs.root(0, { "deno.json", "deno.jsonc" })
+
+          -- Disable denols if not a Deno project
+          if not is_deno_project then
+            opts.enabled = false
+            return true
+          end
+        end,
         vtsls = function(_, opts)
+          -- Check if project root is a Deno project using vim.fs.root
+          local is_deno_project = vim.fs.root(0, { "deno.json", "deno.jsonc" })
+          if is_deno_project then
+            opts.enabled = false
+            return true
+          end
+
           LazyVim.lsp.on_attach(function(client, buffer)
             client.commands["_typescript.moveToFileRefactoring"] = function(command, ctx)
               ---@type string, string, lsp.Range
