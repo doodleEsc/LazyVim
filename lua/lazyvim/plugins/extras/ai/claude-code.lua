@@ -28,7 +28,7 @@ return {
       port_range = { min = 10000, max = 65535 },
       auto_start = true,
       log_level = "info", -- "trace", "debug", "info", "warn", "error"
-      terminal_cmd = "ccr code", -- Custom terminal command (default: "claude")
+      terminal_cmd = "claude", -- Custom terminal command (default: "claude")
       -- For local installations: "~/.claude/local/claude"
       -- For native binary: use output from 'which claude'
 

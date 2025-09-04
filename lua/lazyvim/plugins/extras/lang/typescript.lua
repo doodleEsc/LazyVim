@@ -28,10 +28,47 @@ return {
           enabled = false,
         },
         denols = {
-          enabled = true,
+          root_dir = function(bufnr, on_dir)
+            -- Look for deno config in current file's directory hierarchy
+            local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc" })
+            local node_root = vim.fs.root(bufnr, { "package.json", "tsconfig.json", "jsconfig.json", "node_modules" })
+
+            -- If both exist, choose the closest one to current file
+            local is_deno_project = false
+            if deno_root and node_root then
+              -- Compare path lengths - closer root wins
+              is_deno_project = #deno_root > #node_root
+            elseif deno_root then
+              is_deno_project = true
+            end
+
+            if is_deno_project then
+              on_dir(deno_root)
+            end
+          end,
         },
         vtsls = {
-          enabled = true,
+          root_dir = function(bufnr, on_dir)
+            -- Look for deno config in current file's directory hierarchy
+            local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc" })
+            local node_root = vim.fs.root(bufnr, { "package.json", "tsconfig.json", "jsconfig.json", "node_modules" })
+
+            -- If both exist, choose the closest one to current file
+            local is_deno_project = false
+            if deno_root and node_root then
+              -- Compare path lengths - closer root wins
+              is_deno_project = #deno_root > #node_root
+            elseif deno_root then
+              is_deno_project = true
+            end
+
+            -- Disable vtsls if it's a Deno project (静态检测，作为动态检测的后备)
+            if is_deno_project then
+              return
+            end
+
+            on_dir(node_root)
+          end,
           single_file_support = false,
           -- explicitly add default filetypes, so that we can extend
           -- them in related extras
@@ -136,24 +173,7 @@ return {
           -- disable tsserver
           return true
         end,
-        denols = function(_, opts)
-          -- Check if project root is a Deno project using vim.fs.root
-          local is_deno_project = vim.fs.root(0, { "deno.json", "deno.jsonc" })
-
-          -- Disable denols if not a Deno project
-          if not is_deno_project then
-            opts.enabled = false
-            return true
-          end
-        end,
         vtsls = function(_, opts)
-          -- Check if project root is a Deno project using vim.fs.root
-          local is_deno_project = vim.fs.root(0, { "deno.json", "deno.jsonc" })
-          if is_deno_project then
-            opts.enabled = false
-            return true
-          end
-
           LazyVim.lsp.on_attach(function(client, buffer)
             client.commands["_typescript.moveToFileRefactoring"] = function(command, ctx)
               ---@type string, string, lsp.Range

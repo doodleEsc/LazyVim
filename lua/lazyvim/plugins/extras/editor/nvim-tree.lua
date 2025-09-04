@@ -131,7 +131,7 @@ return {
         "<leader>tt",
         function()
           local api = require("nvim-tree.api")
-          api.tree.toggle({ path = LazyVim.root() })
+          api.tree.toggle({ path = LazyVim.root(), find_file = true, focus = true })
         end,
         desc = "Toggle File Explorer",
       },
@@ -143,7 +143,7 @@ return {
             return
           end
           local api = require("nvim-tree.api")
-          api.tree.open({ path = LazyVim.root(), focus = true })
+          api.tree.toggle({ path = LazyVim.root(), find_file = true, focus = true })
         end,
         desc = "Toggle File Explorer",
       },

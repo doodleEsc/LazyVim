@@ -2,12 +2,11 @@ return {
   -- lspconfig
   {
     "neovim/nvim-lspconfig",
-    event = vim.fn.has("nvim-0.11") == 1 and { "BufReadPre", "BufNewFile", "BufWritePre" } or "LazyFile",
+    event = { "BufReadPre", "BufNewFile", "BufWritePre" },
     dependencies = {
       "mason.nvim",
       {
         "mason-org/mason-lspconfig.nvim",
-        version = vim.fn.has("nvim-0.11") == 0 and "1.32.0" or false,
         config = function() end,
       },
     },
@@ -24,7 +23,6 @@ return {
             source = "if_many",
             prefix = "●",
             -- this will set set the prefix to a function that returns the diagnostics icon based on the severity
-            -- this only works on a recent 0.10.0 build. Will be set to "●" when not supported
             -- prefix = "icons",
           },
           severity_sort = true,
@@ -37,14 +35,14 @@ return {
             },
           },
         },
-        -- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
+        -- Enable this to enable the builtin LSP inlay hints
         -- Be aware that you also will need to properly configure your LSP server to
         -- provide the inlay hints.
         inlay_hints = {
           enabled = true,
           exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
         },
-        -- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
+        -- Enable this to enable the builtin LSP code lenses
         -- Be aware that you also will need to properly configure your LSP server to
         -- provide the code lenses.
         codelens = {
@@ -129,53 +127,39 @@ return {
       LazyVim.lsp.setup()
       LazyVim.lsp.on_dynamic_capability(require("lazyvim.plugins.lsp.keymaps").on_attach)
 
-      -- diagnostics signs
-      if vim.fn.has("nvim-0.10.0") == 0 then
-        if type(opts.diagnostics.signs) ~= "boolean" then
-          for severity, icon in pairs(opts.diagnostics.signs.text) do
-            local name = vim.diagnostic.severity[severity]:lower():gsub("^%l", string.upper)
-            name = "DiagnosticSign" .. name
-            vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
+      -- inlay hints
+      if opts.inlay_hints.enabled then
+        LazyVim.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
+          if
+            vim.api.nvim_buf_is_valid(buffer)
+            and vim.bo[buffer].buftype == ""
+            and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
+          then
+            vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
           end
-        end
+        end)
       end
 
-      if vim.fn.has("nvim-0.10") == 1 then
-        -- inlay hints
-        if opts.inlay_hints.enabled then
-          LazyVim.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
-            if
-              vim.api.nvim_buf_is_valid(buffer)
-              and vim.bo[buffer].buftype == ""
-              and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
-            then
-              vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
-            end
-          end)
-        end
-
-        -- code lens
-        if opts.codelens.enabled and vim.lsp.codelens then
-          LazyVim.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
-            vim.lsp.codelens.refresh()
-            vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-              buffer = buffer,
-              callback = vim.lsp.codelens.refresh,
-            })
-          end)
-        end
+      -- code lens
+      if opts.codelens.enabled and vim.lsp.codelens then
+        LazyVim.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
+          vim.lsp.codelens.refresh()
+          vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+            buffer = buffer,
+            callback = vim.lsp.codelens.refresh,
+          })
+        end)
       end
 
       if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
-        opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
-          or function(diagnostic)
-            local icons = LazyVim.config.icons.diagnostics
-            for d, icon in pairs(icons) do
-              if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-                return icon
-              end
+        opts.diagnostics.virtual_text.prefix = function(diagnostic)
+          local icons = LazyVim.config.icons.diagnostics
+          for d, icon in pairs(icons) do
+            if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+              return icon
             end
           end
+        end
       end
 
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
@@ -195,10 +179,8 @@ return {
       -- get all the servers that are available through mason-lspconfig
       local have_mason, mlsp = pcall(require, "mason-lspconfig")
       local all_mslp_servers = {}
-      if have_mason and vim.fn.has("nvim-0.11") == 1 then
+      if have_mason then
         all_mslp_servers = vim.tbl_keys(require("mason-lspconfig.mappings").get_mason_map().lspconfig_to_package)
-      elseif have_mason then
-        all_mslp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
       end
 
       local exclude_automatic_enable = {} ---@type string[]
@@ -217,19 +199,11 @@ return {
             return true
           end
         end
-        if vim.fn.has("nvim-0.11") == 1 then
-          vim.lsp.config(server, server_opts)
-        else
-          require("lspconfig")[server].setup(server_opts)
-        end
+        vim.lsp.config(server, server_opts)
 
         -- manually enable if mason=false or if this is a server that cannot be installed with mason-lspconfig
         if server_opts.mason == false or not vim.tbl_contains(all_mslp_servers, server) then
-          if vim.fn.has("nvim-0.11") == 1 then
-            vim.lsp.enable(server)
-          else
-            configure(server)
-          end
+          vim.lsp.enable(server)
           return true
         end
         return false
@@ -261,26 +235,11 @@ return {
           ),
         }
 
-        if vim.fn.has("nvim-0.11") == 1 then
-          setup_config.automatic_enable = {
-            exclude = exclude_automatic_enable,
-          }
-        else
-          setup_config.handlers = { configure }
-        end
+        setup_config.automatic_enable = {
+          exclude = exclude_automatic_enable,
+        }
 
         mlsp.setup(setup_config)
-      end
-
-      if LazyVim.lsp.is_enabled("denols") and LazyVim.lsp.is_enabled("vtsls") then
-        local is_deno = require("lspconfig.util").root_pattern("deno.json", "deno.jsonc")
-        LazyVim.lsp.disable("vtsls", is_deno)
-        LazyVim.lsp.disable("denols", function(root_dir, config)
-          if not is_deno(root_dir) then
-            config.settings.deno.enable = false
-          end
-          return false
-        end)
       end
     end,
   },
@@ -290,7 +249,7 @@ return {
 
     "mason-org/mason.nvim",
     cmd = "Mason",
-    version = vim.fn.has("nvim-0.11") == 0 and "1.11.0" or false,
+    version = false,
     keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
     build = ":MasonUpdate",
     opts_extend = { "ensure_installed" },
