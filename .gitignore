@@ -8,3 +8,6 @@ foo.*
 node_modules
 tt.*
 .aider*
+/.claude
+.ctx-tool-tracking.json
+/PRPs
