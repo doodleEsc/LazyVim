@@ -23,4 +23,3 @@ return {
     return opts
   end,
 }
-

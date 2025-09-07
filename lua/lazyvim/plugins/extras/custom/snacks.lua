@@ -96,4 +96,3 @@ return {
     LazyVim.merge(opts, snacksConfig)
   end,
 }
-
