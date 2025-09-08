@@ -30,7 +30,7 @@ return {
         denols = {
           root_dir = function(bufnr, on_dir)
             -- Look for deno config in current file's directory hierarchy
-            local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc" })
+            local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc", "import_map.json" })
             local node_root = vim.fs.root(bufnr, { "package.json", "tsconfig.json", "jsconfig.json", "node_modules" })
 
             -- If both exist, choose the closest one to current file
@@ -50,7 +50,7 @@ return {
         vtsls = {
           root_dir = function(bufnr, on_dir)
             -- Look for deno config in current file's directory hierarchy
-            local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc" })
+            local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc", "import_map.json" })
             local node_root = vim.fs.root(bufnr, { "package.json", "tsconfig.json", "jsconfig.json", "node_modules" })
 
             -- If both exist, choose the closest one to current file
