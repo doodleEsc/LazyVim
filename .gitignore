@@ -11,3 +11,4 @@ tt.*
 /.claude
 .ctx-tool-tracking.json
 /PRPs
+/TASK_PRP
