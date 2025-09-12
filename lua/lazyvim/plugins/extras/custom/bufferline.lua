@@ -74,27 +74,5 @@ return {
     opts.options.color_icons = false
     opts.options.show_buffer_icons = false
     opts.options.tab_size = 14
-
-    opts.highlights = {
-      buffer_selected = {
-        fg = "#f9f5d7",
-        bg = "#458588",
-      },
-      close_button_selected = {
-        fg = "#f9f5d7",
-        bg = "#458588",
-      },
-      separator_selected = {
-        bg = "#458588",
-      },
-      duplicate_selected = {
-        fg = "#f9f5d7",
-        bg = "#458588",
-      },
-      modified_selected = {
-        fg = "#f9f5d7",
-        bg = "#458588",
-      },
-    }
   end,
 }

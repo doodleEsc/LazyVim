@@ -1,6 +1,13 @@
 return {
+
   {
-    "ellisonleao/gruvbox.nvim",
+    "catppuccin/nvim",
+    enabled = false,
+  },
+
+  {
+    "doodleEsc/gruvbox.nvim",
+    dev = true,
     lazy = true,
     opts = {
       terminal_colors = true, -- add neovim terminal colors
@@ -33,8 +40,18 @@ return {
         "akinsho/bufferline.nvim",
         optional = true,
         opts = function(_, opts)
-          if (vim.g.colors_name or ""):find("catppuccin") then
-            opts.highlights = require("catppuccin.groups.integrations.bufferline").get()
+          if (vim.g.colors_name or ""):find("gruvbox") then
+            opts.highlights = require("gruvbox.integrations.bufferline").get()
+          end
+        end,
+      },
+
+      {
+        "nvim-lualine/lualine.nvim",
+        optional = true,
+        opts = function(_, opts)
+          if (vim.g.colors_name or ""):find("gruvbox") then
+            opts.options.theme = require("gruvbox.integrations.lualine").get()
           end
         end,
       },
