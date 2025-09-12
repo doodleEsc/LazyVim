@@ -7,7 +7,6 @@ return {
 
   {
     "doodleEsc/gruvbox.nvim",
-    dev = true,
     lazy = true,
     opts = {
       terminal_colors = true, -- add neovim terminal colors
